@@ -1,0 +1,72 @@
+{
+  "name": "Deutsch",
+  "author": "Mario Gattringer",
+  "version": "4.0.0",
+  "private": true,
+  "keywords": [
+    "pebble-app"
+  ],
+  "dependencies": {},
+  "pebble": {
+    "sdkVersion": "3",
+    "targetPlatforms": [
+      "flint",
+      "emery",
+      "diorite",
+      "chalk",
+      "basalt",
+      "aplite",
+      "gabbro"
+    ],
+    "enableMultiJS": false,
+    "capabilities": [
+      "configurable"
+    ],
+    "projectType": "native",
+    "displayName": "Deutsch",
+    "uuid": "5a301614-84e4-42cc-b8ba-0e47da96f72b",
+    "watchapp": {
+      "watchface": true,
+      "hiddenApp": false,
+      "onlyShownOnCommunication": false
+    },
+    "resources": {
+      "media": [
+        {
+          "file": "images/icon_battery_eco.png",
+          "name": "IMAGE_BATTERY_ECO",
+          "type": "png"
+        },
+        {
+          "characterRegex": "[a-z\u00e4\u00f6\u00fc ]",
+          "compatibility": "2.7",
+          "file": "fonts/Roboto-Light.ttf",
+          "name": "FONT_ROBOTO_LIGHT_34",
+          "trackingAdjust": -1,
+          "type": "font"
+        },
+        {
+          "file": "images/icon_battery.png",
+          "name": "IMAGE_BATTERY",
+          "type": "png"
+        },
+        {
+          "file": "images/icon_battery_charge.png",
+          "name": "IMAGE_BATTERY_CHARGE",
+          "type": "png"
+        },
+        {
+          "file": "images/icon_bluetooth_disconnected.png",
+          "name": "IMAGE_BLUETOOTH_DISCONNECTED",
+          "type": "png"
+        },
+        {
+          "file": "images/icon_bluetooth_connected.png",
+          "name": "IMAGE_BLUETOOTH_CONNECTED",
+          "type": "png"
+        }
+      ]
+    },
+    "messageKeys": {}
+  }
+}
