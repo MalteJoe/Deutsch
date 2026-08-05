@@ -46,6 +46,14 @@
           "type": "font"
         },
         {
+          "characterRegex": "[a-z\u00e4\u00f6\u00fc ]",
+          "compatibility": "2.7",
+          "file": "fonts/Roboto-Light.ttf",
+          "name": "FONT_ROBOTO_LIGHT_42",
+          "trackingAdjust": -1,
+          "type": "font"
+        },
+        {
           "file": "images/icon_battery.png",
           "name": "IMAGE_BATTERY",
           "type": "png"
