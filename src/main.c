@@ -42,11 +42,23 @@ static const bool key_indicator_batt_redonly = true;	// true = show battery icon
 static const bool key_indicator_bt_offonly = true;		// true = show Bluetooth icon only if offline
 static const bool key_indicator_rightalign = true;		// true = right aligned text, false=left aligned
 
-//Display resolution
-enum {
-  XMAX = 144,
-  YMAX = 168
- };
+//Reference resolution the original layout was designed for (Pebble Classic / Aplite).
+//All layout coordinates below are expressed relative to this size and then
+//scaled to whatever the actual watch's display resolution is, so the face
+//looks right on every generation (Aplite 144x168, Basalt/Diorite/Flint 144x168,
+//Chalk 180x180 round, Emery 200x228, ...) instead of only filling the
+//top-left 144x168 corner of larger screens.
+#define BASE_W 144
+#define BASE_H 168
+
+//Scale a horizontal / vertical coordinate (or length) given in "base" pixels
+//to the equivalent value on the watch's actual screen.
+static int16_t scale_x(int16_t v, GRect bounds) {
+  return (int16_t)((int32_t)v * bounds.size.w / BASE_W);
+}
+static int16_t scale_y(int16_t v, GRect bounds) {
+  return (int16_t)((int32_t)v * bounds.size.h / BASE_H);
+}
 
 //Battery icon will be red if charge is <= this percentage
 //(could be configurable in the future)
@@ -153,6 +165,9 @@ static void update_battery(BatteryChargeState charge_state) {
 //draw the remaining battery percentage
 static void battery_layer_update_callback(Layer *me, GContext* ctx) {
   const GColor color = batteryPercent <= red_percent ? GColorRed : key_indicator_theme==4 ? GColorBlack : GColorWhite;
+  //Antialiasing is on by default where the platform supports it, but we set
+  //it explicitly here since this is one of the few places we draw manually.
+  graphics_context_set_antialiased(ctx, true);
   graphics_context_set_stroke_color(ctx, color);
   graphics_context_set_fill_color(ctx, color);
   graphics_fill_rect(ctx, GRect(2, 2, batteryPercent/100.0*11.0, 5), 0, GCornerNone);
@@ -160,12 +175,10 @@ static void battery_layer_update_callback(Layer *me, GContext* ctx) {
 
 static void load_battery_layers() {
   battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY);
-  GRect battery_frame = (GRect) {
-    .origin = { .x = 3, .y = 2 },
-    .size = gbitmap_get_bounds(battery_image).size
-  };
-  battery_fill_layer = bitmap_layer_create(battery_frame);
-  battery_image_layer = bitmap_layer_create(battery_frame);
+  //Actual position/size is applied by layout_layers() once all resources
+  //exist; GRectZero here is just a valid placeholder for layer_create().
+  battery_fill_layer = bitmap_layer_create(GRectZero);
+  battery_image_layer = bitmap_layer_create(GRectZero);
   bitmap_layer_set_bitmap(battery_image_layer, battery_image);
   layer_set_update_proc(bitmap_layer_get_layer(battery_fill_layer), battery_layer_update_callback);
 	
@@ -202,11 +215,9 @@ static void bluetooth_connection_callback(bool connected) {  //Bluetooth handler
 static void load_bluetooth_layers() {
   bluetooth_connected_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_CONNECTED);
   bluetooth_disconnected_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_DISCONNECTED);
-  GRect bluetooth_frame = (GRect) {
-    .origin = { .x = 129, .y = 2 },
-    .size = gbitmap_get_bounds(bluetooth_connected_image).size
-  };
-  bluetooth_layer = bitmap_layer_create(bluetooth_frame);
+  //Actual position/size is applied by layout_layers() once all resources
+  //exist; GRectZero here is just a valid placeholder for layer_create().
+  bluetooth_layer = bitmap_layer_create(GRectZero);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(bluetooth_layer));
   if (key_indicator_bluetooth) {
     bluetooth_connection_service_subscribe(bluetooth_connection_callback);
@@ -281,41 +292,139 @@ static void load_text_layers() {
   GFont dateFont		= fonts_get_system_font(FONT_KEY_GOTHIC_18);
   ResHandle robotoLight	= resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_34);
 
-  //Get alignment
-  const GTextAlignment align = key_indicator_rightalign ? GTextAlignmentRight : GTextAlignmentLeft;
-    
-  // Configure Minute Layers
-  minuteLayer_3lines = text_layer_create((GRect) { .origin = {0, 10}, .size = {XMAX-3, YMAX-10}});
-  text_layer_set_text_alignment(minuteLayer_3lines, align);
+  //Actual position/size/alignment is applied by layout_layers(); GRectZero
+  //here is just a valid placeholder for text_layer_create().
+  minuteLayer_3lines = text_layer_create(GRectZero);
   text_layer_set_background_color(minuteLayer_3lines, GColorClear);
   text_layer_set_font(minuteLayer_3lines, fonts_load_custom_font(robotoLight));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(minuteLayer_3lines));
-  
-  minuteLayer_2longlines = text_layer_create((GRect) { .origin = {0, 44}, .size = {XMAX-3, YMAX-44}});
-  text_layer_set_text_alignment(minuteLayer_2longlines, align);
+
+  minuteLayer_2longlines = text_layer_create(GRectZero);
   text_layer_set_background_color(minuteLayer_2longlines, GColorClear);
   text_layer_set_font(minuteLayer_2longlines, fonts_load_custom_font(robotoLight));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(minuteLayer_2longlines));
-  
-  minuteLayer_2biglines = text_layer_create((GRect) {.origin = {0, 23}, .size = {XMAX-3, YMAX-23}});
-  text_layer_set_text_alignment(minuteLayer_2biglines, align);
+
+  minuteLayer_2biglines = text_layer_create(GRectZero);
   text_layer_set_background_color(minuteLayer_2biglines, GColorClear);
   text_layer_set_font(minuteLayer_2biglines, bitham);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(minuteLayer_2biglines));
-  
+
   // Configure Hour Layer
-  hourLayer = text_layer_create((GRect) { .origin = {0, 109}, .size = {XMAX-3, YMAX-109}});
-  text_layer_set_text_alignment(hourLayer, align);
+  hourLayer = text_layer_create(GRectZero);
   text_layer_set_background_color(hourLayer, GColorClear);
   text_layer_set_font(hourLayer, bithamBold);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(hourLayer));
-  
+
   // Configure DateLayer
-  dateLayer = text_layer_create((GRect) { .origin = {57, -6}, .size = {XMAX-40, YMAX}});
+  dateLayer = text_layer_create(GRectZero);
   text_layer_set_background_color(dateLayer, GColorClear);
   text_layer_set_font(dateLayer, dateFont);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(dateLayer));
   layer_set_hidden(text_layer_get_layer(dateLayer), !key_indicator_date);
+}
+
+//Compute and apply this watchface's layout (position, size, alignment) for
+//the given unobstructed screen bounds. Called once at startup, and again
+//whenever the unobstructed area changes - e.g. Timeline Quick View sliding
+//in/out - so the face always adapts to the currently available space.
+//Must be called only after load_text_layers()/load_battery_layers()/
+//load_bluetooth_layers() have created their layers and images.
+static void layout_layers(GRect bounds) {
+  //Get alignment. On round displays (Chalk) right/left aligned text can run
+  //into the curved bezel, so text is centered there instead.
+#if defined(PBL_ROUND)
+  const GTextAlignment align = GTextAlignmentCenter;
+  (void)key_indicator_rightalign; // not applicable on round displays
+#else
+  const GTextAlignment align = key_indicator_rightalign ? GTextAlignmentRight : GTextAlignmentLeft;
+#endif
+
+  //Extra side margin so text doesn't get clipped by a round bezel. 0 on
+  //rectangular displays, where the layout matches the original design.
+  const int16_t round_margin = PBL_IF_ROUND_ELSE(10, 0);
+
+  //Just like the fonts don't get taller on a taller screen, they don't get
+  //wider on a wider screen either - and the minute-text layers rely on a
+  //narrow, fixed box width to word-wrap into multiple lines (e.g. "zwanzig" /
+  //"nach" on two lines). Scaling that width up to fill a wider screen lets
+  //long phrases fit on a single line instead, which breaks the intended
+  //layout. So the text column keeps its original fixed pixel width, and any
+  //extra screen width becomes margin around it instead, centered on screen.
+  const int16_t extra_w = bounds.size.w > BASE_W ? (int16_t)(bounds.size.w - BASE_W) : 0;
+  const int16_t x0 = bounds.origin.x + extra_w / 2 + round_margin;
+  const int16_t w  = BASE_W - 3 - 2 * round_margin;
+
+  //The fonts are fixed-size bitmap fonts - they don't get bigger on a taller
+  //screen - so the vertical *gap* between the minutes and the hour must stay
+  //fixed too. Scaling it by the screen height (like the horizontal layout
+  //scales width) just stretches empty space in between. Instead, keep the
+  //original pixel spacing and use any extra screen height as a single shared
+  //offset that nudges the whole time+date block down, roughly centering it
+  //and giving the date some breathing room at the top on taller screens.
+  const int16_t extra_h = bounds.size.h > BASE_H ? (int16_t)(bounds.size.h - BASE_H) : 0;
+  const int16_t y = bounds.origin.y + extra_h / 2;
+  const int16_t screen_bottom = bounds.origin.y + bounds.size.h;
+
+  // Minute Layers
+  text_layer_set_text_alignment(minuteLayer_3lines, align);
+  layer_set_frame(text_layer_get_layer(minuteLayer_3lines), (GRect) {
+    .origin = { x0, y + 10 },
+    .size   = { w, screen_bottom - (y + 10) }
+  });
+
+  text_layer_set_text_alignment(minuteLayer_2longlines, align);
+  layer_set_frame(text_layer_get_layer(minuteLayer_2longlines), (GRect) {
+    .origin = { x0, y + 44 },
+    .size   = { w, screen_bottom - (y + 44) }
+  });
+
+  text_layer_set_text_alignment(minuteLayer_2biglines, align);
+  layer_set_frame(text_layer_get_layer(minuteLayer_2biglines), (GRect) {
+    .origin = { x0, y + 23 },
+    .size   = { w, screen_bottom - (y + 23) }
+  });
+
+  // Hour Layer
+  text_layer_set_text_alignment(hourLayer, align);
+  layer_set_frame(text_layer_get_layer(hourLayer), (GRect) {
+    .origin = { x0, y + 109 },
+    .size   = { w, screen_bottom - (y + 109) }
+  });
+
+  // Battery icon - anchored proportionally to the top-left corner, native icon size.
+  const GRect battery_frame = (GRect) {
+    .origin = { bounds.origin.x + scale_x(3, bounds), bounds.origin.y + scale_y(2, bounds) },
+    .size = gbitmap_get_bounds(battery_image).size
+  };
+  layer_set_frame(bitmap_layer_get_layer(battery_image_layer), battery_frame);
+  layer_set_frame(bitmap_layer_get_layer(battery_fill_layer), battery_frame);
+
+  // Bluetooth icon - anchored proportionally to the top-right corner, native icon size.
+  const GSize bt_icon_size = gbitmap_get_bounds(bluetooth_connected_image).size;
+  layer_set_frame(bitmap_layer_get_layer(bluetooth_layer), (GRect) {
+    .origin = { bounds.origin.x + bounds.size.w - bt_icon_size.w - scale_x(2, bounds), bounds.origin.y + scale_y(2, bounds) },
+    .size = bt_icon_size
+  });
+
+  // Date Layer - genuinely centered horizontally (inset just enough to clear
+  // the battery/bluetooth icons on either side, so it stays centered even
+  // though only one side actually has an icon). Uses its own small top
+  // margin (independent of the minute/hour block's vertical offset above),
+  // since it doesn't need to grow nearly as much on taller screens.
+  const int16_t date_icon_clearance = (battery_frame.size.w > bt_icon_size.w ? battery_frame.size.w : bt_icon_size.w)
+                                       + scale_x(6, bounds);
+  layer_set_frame(text_layer_get_layer(dateLayer), (GRect) {
+    .origin = { bounds.origin.x + date_icon_clearance, bounds.origin.y + scale_y(6, bounds) },
+    .size   = { bounds.size.w - 2 * date_icon_clearance, scale_y(20, bounds) }
+  });
+  text_layer_set_text_alignment(dateLayer, GTextAlignmentCenter);
+}
+
+//Called whenever the unobstructed screen area finishes changing (e.g. after
+//Timeline Quick View has fully appeared or disappeared), so the layout can
+//be recalculated for the new available space.
+static void unobstructed_change_handler(void *context) {
+  layout_layers(layer_get_unobstructed_bounds(window_get_root_layer(window)));
 }
 
 //Display Time
@@ -459,15 +568,29 @@ static void window_load(Window *window) {
   key_indicator_date =		persist_exists(KEY_DATE) 		? persist_read_bool(KEY_DATE) 		: key_indicator_date;
   key_indicator_theme =	    persist_exists(KEY_THEME) 		? persist_read_bool(KEY_THEME) 		: key_indicator_theme;
   
-  //Load Time and Text lines
+  //Get the actual usable bounds of this watch's screen (varies by platform:
+  //144x168 on Aplite/Basalt/Diorite/Flint, 180x180 round on Chalk, 200x228 on
+  //Emery, ...) instead of assuming the old fixed 144x168 Aplite resolution.
+  Layer *window_layer = window_get_root_layer(window);
+  GRect bounds = layer_get_unobstructed_bounds(window_layer);
+
+  //Create all layers, then position them for the current bounds.
   load_text_layers();
+  load_battery_layers();
+  load_bluetooth_layers();
+  layout_layers(bounds);
+
+  //Re-run the layout whenever the unobstructed area changes, e.g. Timeline
+  //Quick View sliding in/out, so the face adapts to the available space.
+  UnobstructedAreaHandlers unobstructed_handlers = {
+    .did_change = unobstructed_change_handler
+  };
+  unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
+
   set_theme();
   const time_t now = time(NULL);
   display_time(localtime(&now));
   tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
-  
-  load_battery_layers();
-  load_bluetooth_layers();
 }
 
 static void window_unload(Window *window) {
@@ -490,6 +613,7 @@ static void init(void) {
 static void deinit(void) {
   window_destroy(window);
   tick_timer_service_unsubscribe();
+  unobstructed_area_service_unsubscribe();
   
   //Bluetooth
   bluetooth_connection_service_unsubscribe();
