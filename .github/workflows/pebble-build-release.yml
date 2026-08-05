@@ -1,0 +1,54 @@
+name: Pebble Build and Release
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pebble SDK
+        run: |
+          python -m pip install --upgrade pip
+          pip install pebble-tool
+
+      - name: Build Pebble app
+        run: |
+          export PEBBLE_TOOL_PATH="$HOME/.local/bin"
+          pebble build
+
+      - name: Upload PBW artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deutsch-pbw
+          path: build/Deutsch.pbw
+
+      - name: Create release if tag exists or on manual run
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Manual workflow run; skipping automatic release creation."
+
+      - name: Create GitHub Release on push
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/Deutsch.pbw
+          draft: false
+          prerelease: false
+          generate_release_notes: true
