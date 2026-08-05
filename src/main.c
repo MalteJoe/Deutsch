@@ -349,9 +349,12 @@ static void layout_layers(GRect bounds) {
   //"nach" on two lines). Scaling that width up to fill a wider screen lets
   //long phrases fit on a single line instead, which breaks the intended
   //layout. So the text column keeps its original fixed pixel width, and any
-  //extra screen width becomes margin around it instead, centered on screen.
+  //extra screen width becomes a modest margin instead of a huge blank gap on
+  //larger faces.
   const int16_t extra_w = bounds.size.w > BASE_W ? (int16_t)(bounds.size.w - BASE_W) : 0;
-  const int16_t x0 = bounds.origin.x + extra_w / 2 + round_margin;
+  const int16_t max_margin = 12;
+  const int16_t x_margin = extra_w > 0 ? (extra_w / 2 < max_margin ? extra_w / 2 : max_margin) : 0;
+  const int16_t x0 = bounds.origin.x + x_margin + round_margin;
   const int16_t w  = BASE_W - 3 - 2 * round_margin;
 
   //The fonts are fixed-size bitmap fonts - they don't get bigger on a taller

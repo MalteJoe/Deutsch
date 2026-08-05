@@ -10,7 +10,7 @@ Pebble.addEventListener("showConfiguration", function(){
   console.log("URL: creating configuration URL");
 
   //default URL
-  var url = 'http://www.roesler-ac.de/watchface-deutsch-config.html?';
+  var url = 'https://maltejoe.github.io/Deutsch/watchface-deutsch-config.html?';
 
   //starting with first key
   var firstKey = true; 

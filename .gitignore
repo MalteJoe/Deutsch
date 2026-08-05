@@ -1,5 +1,6 @@
 build
 .lock-waf_darwin_build
+.lock-waf_linux_build
 .DS_Store
 *.swp
 
