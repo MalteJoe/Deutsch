@@ -14,7 +14,6 @@ static BitmapLayer *battery_image_layer, *battery_fill_layer; //battery icon, sh
 
 //Text Lines
 static TextLayer *minuteLayer_2longlines, *minuteLayer_3lines, *minuteLayer_2biglines, *hourLayer, *dateLayer;
-static GFont robotoLightFont, robotoLightLargeFont;
 
 //Set key IDs
 enum {
@@ -292,20 +291,17 @@ static void load_text_layers() {
   GFont bithamBold 		= fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD);
   GFont dateFont		= fonts_get_system_font(FONT_KEY_GOTHIC_18);
   ResHandle robotoLight	= resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_34);
-  ResHandle robotoLightLarge = resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_42);
-  robotoLightFont = fonts_load_custom_font(robotoLight);
-  robotoLightLargeFont = fonts_load_custom_font(robotoLightLarge);
 
   //Actual position/size/alignment is applied by layout_layers(); GRectZero
   //here is just a valid placeholder for text_layer_create().
   minuteLayer_3lines = text_layer_create(GRectZero);
   text_layer_set_background_color(minuteLayer_3lines, GColorClear);
-  text_layer_set_font(minuteLayer_3lines, robotoLightFont);
+  text_layer_set_font(minuteLayer_3lines, fonts_load_custom_font(robotoLight));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(minuteLayer_3lines));
 
   minuteLayer_2longlines = text_layer_create(GRectZero);
   text_layer_set_background_color(minuteLayer_2longlines, GColorClear);
-  text_layer_set_font(minuteLayer_2longlines, robotoLightFont);
+  text_layer_set_font(minuteLayer_2longlines, fonts_load_custom_font(robotoLight));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(minuteLayer_2longlines));
 
   minuteLayer_2biglines = text_layer_create(GRectZero);
@@ -356,17 +352,6 @@ static void layout_layers(GRect bounds) {
   const int16_t allow_wide = extra_w > 0 ? (extra_w > 18 ? 18 : extra_w) : 0;
   const int16_t w = BASE_W - 3 - 2 * round_margin + allow_wide;
   const int16_t x0 = bounds.origin.x + (bounds.size.w - w) / 2 + round_margin;
-
-  const bool use_large_fonts = bounds.size.w >= 180 || bounds.size.h >= 220;
-  if (use_large_fonts) {
-    text_layer_set_font(minuteLayer_3lines, robotoLightLargeFont);
-    text_layer_set_font(minuteLayer_2longlines, robotoLightLargeFont);
-    text_layer_set_font(minuteLayer_2biglines, robotoLightLargeFont);
-  } else {
-    text_layer_set_font(minuteLayer_3lines, robotoLightFont);
-    text_layer_set_font(minuteLayer_2longlines, robotoLightFont);
-    text_layer_set_font(minuteLayer_2biglines, robotoLightFont);
-  }
 
   //The fonts are fixed-size bitmap fonts - they don't get bigger on a taller
   //screen - so the vertical *gap* between the minutes and the hour must stay
