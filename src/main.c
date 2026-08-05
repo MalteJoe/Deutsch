@@ -343,19 +343,15 @@ static void layout_layers(GRect bounds) {
   //rectangular displays, where the layout matches the original design.
   const int16_t round_margin = PBL_IF_ROUND_ELSE(10, 0);
 
-  //Just like the fonts don't get taller on a taller screen, they don't get
-  //wider on a wider screen either - and the minute-text layers rely on a
-  //narrow, fixed box width to word-wrap into multiple lines (e.g. "zwanzig" /
-  //"nach" on two lines). Scaling that width up to fill a wider screen lets
-  //long phrases fit on a single line instead, which breaks the intended
-  //layout. So the text column keeps its original fixed pixel width, and any
-  //extra screen width becomes a modest margin instead of a huge blank gap on
-  //larger faces.
+  //Keep the time text column wider than the original only moderately, so it
+  //still wraps close to the original Pebble layout without stretching all the
+  //way to the full screen width on large watch faces. The previous full-width
+  //approach was too wide; this preserves the intended wrapping behavior while
+  //giving a little extra breathing room on larger screens.
   const int16_t extra_w = bounds.size.w > BASE_W ? (int16_t)(bounds.size.w - BASE_W) : 0;
-  const int16_t max_margin = 12;
-  const int16_t x_margin = extra_w > 0 ? (extra_w / 2 < max_margin ? extra_w / 2 : max_margin) : 0;
-  const int16_t x0 = bounds.origin.x + x_margin + round_margin;
-  const int16_t w  = BASE_W - 3 - 2 * round_margin;
+  const int16_t allow_wide = extra_w > 0 ? (extra_w > 18 ? 18 : extra_w) : 0;
+  const int16_t w = BASE_W - 3 - 2 * round_margin + allow_wide;
+  const int16_t x0 = bounds.origin.x + (bounds.size.w - w) / 2 + round_margin;
 
   //The fonts are fixed-size bitmap fonts - they don't get bigger on a taller
   //screen - so the vertical *gap* between the minutes and the hour must stay
