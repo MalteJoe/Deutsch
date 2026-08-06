@@ -339,55 +339,45 @@ static void layout_layers(GRect bounds) {
   const GTextAlignment align = key_indicator_rightalign ? GTextAlignmentRight : GTextAlignmentLeft;
 #endif
 
-  //Extra side margin so text doesn't get clipped by a round bezel. 0 on
-  //rectangular displays, where the layout matches the original design.
-  const int16_t round_margin = PBL_IF_ROUND_ELSE(10, 0);
+  // bounding box with margins depending on the model
+  const GEdgeInsets margin = GEdgeInsets(bounds.size.h > BASE_H ? 10 : 0, bounds.size.w > BASE_W ? 10 : 0);
+  const GRect r_drawing_area = grect_inset(bounds, PBL_IF_ROUND_ELSE(GEdgeInsets(0, 10), margin));
 
-  //Keep the time text column wider than the original only moderately, so it
-  //still wraps close to the original Pebble layout without stretching all the
-  //way to the full screen width on large watch faces. The previous full-width
-  //approach was too wide; this preserves the intended wrapping behavior while
-  //giving a little extra breathing room on larger screens.
-  const int16_t extra_w = bounds.size.w > BASE_W ? (int16_t)(bounds.size.w - BASE_W) : 0;
-  const int16_t allow_wide = extra_w > 0 ? (extra_w > 18 ? 18 : extra_w) : 0;
-  const int16_t w = BASE_W - 3 - 2 * round_margin + allow_wide;
-  const int16_t x0 = bounds.origin.x + (bounds.size.w - w) / 2 + round_margin;
+  GRect r_text_area = (GRect) {
+    .origin = { 0, 0 },
+    .size = { BASE_W, BASE_H }
+  };
+  grect_align(&r_text_area, &r_drawing_area, PBL_IF_ROUND_ELSE(GAlignCenter, key_indicator_rightalign ? GAlignRight : GAlignLeft), false);
+  r_text_area.origin.y += 10;
+  r_text_area.size.h -= 10;
 
   //The fonts are fixed-size bitmap fonts - they don't get bigger on a taller
   //screen - so the vertical *gap* between the minutes and the hour must stay
   //fixed too. Scaling it by the screen height (like the horizontal layout
   //scales width) just stretches empty space in between. Instead, keep the
-  //original pixel spacing and use any extra screen height as a single shared
-  //offset that nudges the whole time+date block down, roughly centering it
-  //and giving the date some breathing room at the top on taller screens.
-  const int16_t extra_h = bounds.size.h > BASE_H ? (int16_t)(bounds.size.h - BASE_H) : 0;
-  const int16_t y = bounds.origin.y + extra_h / 2;
-  const int16_t screen_bottom = bounds.origin.y + bounds.size.h;
+  //original pixel spacing.
 
   // Minute Layers
   text_layer_set_text_alignment(minuteLayer_3lines, align);
-  layer_set_frame(text_layer_get_layer(minuteLayer_3lines), (GRect) {
-    .origin = { x0, y + 10 },
-    .size   = { w, screen_bottom - (y + 10) }
-  });
+  layer_set_frame(text_layer_get_layer(minuteLayer_3lines), r_text_area);
 
   text_layer_set_text_alignment(minuteLayer_2longlines, align);
   layer_set_frame(text_layer_get_layer(minuteLayer_2longlines), (GRect) {
-    .origin = { x0, y + 44 },
-    .size   = { w, screen_bottom - (y + 44) }
+    .origin = { r_text_area.origin.x, r_text_area.origin.y + 24 },
+    .size   = { r_text_area.size.w, r_text_area.size.h - 24 }
   });
 
   text_layer_set_text_alignment(minuteLayer_2biglines, align);
   layer_set_frame(text_layer_get_layer(minuteLayer_2biglines), (GRect) {
-    .origin = { x0, y + 23 },
-    .size   = { w, screen_bottom - (y + 23) }
+    .origin = { r_text_area.origin.x, r_text_area.origin.y + 13 },
+    .size   = { r_text_area.size.w, r_text_area.size.h - 13 }
   });
 
   // Hour Layer
   text_layer_set_text_alignment(hourLayer, align);
   layer_set_frame(text_layer_get_layer(hourLayer), (GRect) {
-    .origin = { x0, y + 109 },
-    .size   = { w, screen_bottom - (y + 109) }
+    .origin = { r_text_area.origin.x, r_text_area.origin.y + 99 },
+    .size   = { r_text_area.size.w, r_text_area.size.h - 99 }
   });
 
   // Battery icon - anchored proportionally to the top-left corner, native icon size.
