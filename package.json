@@ -10,12 +10,12 @@
   "pebble": {
     "sdkVersion": "3",
     "targetPlatforms": [
-      "flint",
-      "emery",
-      "diorite",
-      "chalk",
-      "basalt",
       "aplite",
+      "basalt",
+      "chalk",
+      "diorite",
+      "emery",
+      "flint",
       "gabbro"
     ],
     "enableMultiJS": false,
