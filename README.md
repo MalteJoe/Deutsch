@@ -18,27 +18,29 @@ A battery icon is displayed in the upper left corner when charge drops to 10 % o
 
 ![Battery and Bluetooth icons](pics/icons.png)
 
-The watchface is based on https://github.com/n3v3r001/n3v3rstextone, with the overall design and most of the source code unchanged. Both use the same settings dialog and share settings when installing one over the other on the watch. This repository is yet another fork of that original work, with additional changes and maintenance by the current maintainer while still crediting the original authors and their design.
+The watchface is based on https://github.com/n3v3r001/n3v3rstextone by @n3v3r001 and the [fork](https://github.com/wolframroesler/Deutsch) by @wolframroesler adjusted for modern pebbles.
 
-I applied the following changes (refer to the git log for details):
-
-* Add fuzzy mode (the original would give the exact time, e. g. "sieben nach halb elf")
-* Align text to the right (since I wear the watch on the left wrist, and the left side of the watch is frequently covered by the shirt sleeve)
-* Add color themes for blue, red, green, gray, and white background
-* Show battery icon in red when < 10 %
-* Show battery icon only when < 10 %
-* Show Bluetooth icon only when offline
-* Migrate to Pebble SDK 3
-* Change the name from "n3v3rs text one" to "Deutsch"
-
-To install the watchface on your Pebble, download the latest release from the GitHub Releases page and upload the generated `Deutsch.pbw` file using the Pebble app on your smartphone. If you prefer building it yourself, you can also build and install the watchface with the Pebble SDK as described on https://developer.rebble.io/developer.pebble.com/tutorials/watchface-tutorial/part1/index.html.
+To install the watchface on your Pebble, download the latest release from the GitHub Releases page and upload the generated `Deutsch.pbw` file using the Pebble app on your smartphone. If you prefer building it yourself, you can also build and install the watchface with the Pebble SDK as described on https://developer.rebble.io/developer.pebble.com/tutorials/watchface-tutorial/part1/index.html. Check out the devcontainer and Actions setup in this repo to see how to install the SDK and build the watchface.
 
 Releases are built automatically in GitHub Actions, so the latest packaged build is always available from the repository's Releases page.
 
-Planned future changes:
+## Changes
 
-* Configuration options to enable/disable the changes I made to the original
+In addition to the [changes](https://github.com/wolframroesler/Deutsch) by @wolframroesler I have made these additions:
+
+### Technical
+
+* Update to Pebble SDK 4 to support Pebble 2, Pebble 2 Duo, Pebble Time 2 and Pebble Round 2
+* Refactor layout logic to support an array of watch resolutions
+* Recaclulate the layout when Timeline events are obstructing the screen
+* Added setup for DevContainer and GitHub Actions for automatic builds
+* Use GitHub Pages for the settings
+
+### Layout
+
+* On larger displays the text is padded to the bottom right with some margin to the screen borders
+
+## Planned future changes
+
+* Configuration options to enable/disable the changes @wolframroesler made to the original
 * Make it available in the Pebble store
-
----
-*Wolfram Rösler • wolfram@roesler-ac.de • https://gitlab.com/wolframroesler • https://twitter.com/wolframroesler • https://www.linkedin.com/in/wolframroesler/*
