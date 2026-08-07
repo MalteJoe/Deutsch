@@ -6,7 +6,13 @@
                 "${workspaceFolder}/**",
                 "/home/node/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/emery/include"
             ],
-            "defines": [],
+            "defines": [
+                "PBL_COLOR",
+                "PBL_RECT",
+                "PBL_PLATFORM_EMERY",
+                "PBL_DISPLAY_WIDTH=200",
+                "PBL_DISPLAY_HEIGHT=228"
+            ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "c++17"

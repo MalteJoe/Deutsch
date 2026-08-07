@@ -340,9 +340,13 @@ static void layout_layers(GRect bounds) {
 #endif
 
   // bounding box with margins depending on the model
+#if defined(PBL_RECT)
   const GEdgeInsets margin = GEdgeInsets(bounds.size.h > BASE_H ? 10 : 0, bounds.size.w > BASE_W ? 10 : 0);
-  const GRect r_drawing_area = grect_inset(bounds, PBL_IF_ROUND_ELSE(GEdgeInsets(0, 10), margin));
-
+  const GRect r_drawing_area = grect_inset(bounds, margin);
+#else
+  const GRect r_drawing_area = grect_inset(bounds, GEdgeInsets(0, 10));
+#endif
+  
   GRect r_text_area = (GRect) {
     .origin = { 0, 0 },
     .size = { BASE_W, BASE_H }
@@ -395,11 +399,6 @@ static void layout_layers(GRect bounds) {
     .size = bt_icon_size
   });
 
-  // Date Layer - genuinely centered horizontally (inset just enough to clear
-  // the battery/bluetooth icons on either side, so it stays centered even
-  // though only one side actually has an icon). Uses its own small top
-  // margin (independent of the minute/hour block's vertical offset above),
-  // since it doesn't need to grow nearly as much on taller screens.
   const int16_t date_icon_clearance = (battery_frame.size.w > bt_icon_size.w ? battery_frame.size.w : bt_icon_size.w)
                                        + scale_x(6, bounds);
   layer_set_frame(text_layer_get_layer(dateLayer), (GRect) {
@@ -412,9 +411,11 @@ static void layout_layers(GRect bounds) {
 //Called whenever the unobstructed screen area finishes changing (e.g. after
 //Timeline Quick View has fully appeared or disappeared), so the layout can
 //be recalculated for the new available space.
+#ifndef PBL_PLATFORM_APLITE
 static void unobstructed_change_handler(void *context) {
   layout_layers(layer_get_unobstructed_bounds(window_get_root_layer(window)));
 }
+#endif
 
 //Display Time
 static void display_time(const struct tm *time) {
@@ -569,11 +570,13 @@ static void window_load(Window *window) {
   load_bluetooth_layers();
   layout_layers(bounds);
 
+#if !defined(PBL_PLATFORM_APLITE)
   //Re-run the layout whenever the unobstructed area changes, e.g. Timeline
   //Quick View sliding in/out, so the face adapts to the available space.
   UnobstructedAreaHandlers unobstructed_handlers = {
     .did_change = unobstructed_change_handler
   };
+#endif
   unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
 
   set_theme();

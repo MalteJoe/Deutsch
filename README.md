@@ -18,7 +18,7 @@ A battery icon is displayed in the upper left corner when charge drops to 10 % o
 
 ![Battery and Bluetooth icons](pics/icons.png)
 
-The watchface is based on https://github.com/n3v3r001/n3v3rstextone by @n3v3r001 and the [fork](https://github.com/wolframroesler/Deutsch) by @wolframroesler adjusted for modern pebbles.
+The watchface is based on https://github.com/n3v3r001/n3v3rstextone by [@n3v3r001](https://github.com/n3v3r001) and the [fork](https://github.com/wolframroesler/Deutsch) by [@wolframroesler](https://github.com/wolframroesler) adjusted for modern pebbles.
 
 To install the watchface on your Pebble, download the latest release from the GitHub Releases page and upload the generated `Deutsch.pbw` file using the Pebble app on your smartphone. If you prefer building it yourself, you can also build and install the watchface with the Pebble SDK as described on https://developer.rebble.io/developer.pebble.com/tutorials/watchface-tutorial/part1/index.html. Check out the devcontainer and Actions setup in this repo to see how to install the SDK and build the watchface.
 
@@ -26,7 +26,7 @@ Releases are built automatically in GitHub Actions, so the latest packaged build
 
 ## Changes
 
-In addition to the [changes](https://github.com/wolframroesler/Deutsch) by @wolframroesler I have made these additions:
+In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wolframroesler](https://github.com/wolframroesler) I have made these additions:
 
 ### Technical
 
@@ -42,5 +42,5 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by @wolf
 
 ## Planned future changes
 
-* Configuration options to enable/disable the changes @wolframroesler made to the original
+* Configuration options to enable/disable the changes [@wolframroesler](https://github.com/wolframroesler) made to the original
 * Make it available in the Pebble store
