@@ -1,17 +1,15 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "Emery",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/codespace/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/common/include",
-                "/home/codespace/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/emery/include"
+                "/home/node/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/emery/include"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/clang",
+            "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "linux-clang-x64"
+            "cppStandard": "c++17"
         }
     ],
     "version": 4

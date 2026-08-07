@@ -1,0 +1,16 @@
+{
+	"name": "Pebble",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:5-24-trixie",
+
+	"postCreateCommand": "bash .devcontainer/post-create.sh",
+	"features": {
+		"ghcr.io/devcontainer-community/devcontainer-features/astral.sh-uv:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools-extension-pack"
+			]
+		}
+	}
+}
