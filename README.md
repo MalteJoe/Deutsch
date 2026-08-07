@@ -43,4 +43,6 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 ## Planned future changes
 
 * Configuration options to enable/disable the changes [@wolframroesler](https://github.com/wolframroesler) made to the original
+* make the configuration work in the cloudpebble emulator
+* update the configuration design to pebbles default template and improve saving ux
 * Make it available in the Pebble store
