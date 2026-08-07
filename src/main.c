@@ -51,15 +51,6 @@ static const bool key_indicator_rightalign = true;		// true = right aligned text
 #define BASE_W 144
 #define BASE_H 168
 
-//Scale a horizontal / vertical coordinate (or length) given in "base" pixels
-//to the equivalent value on the watch's actual screen.
-static int16_t scale_x(int16_t v, GRect bounds) {
-  return (int16_t)((int32_t)v * bounds.size.w / BASE_W);
-}
-static int16_t scale_y(int16_t v, GRect bounds) {
-  return (int16_t)((int32_t)v * bounds.size.h / BASE_H);
-}
-
 //Battery icon will be red if charge is <= this percentage
 //(could be configurable in the future)
 static const int red_percent = 10;
@@ -319,6 +310,7 @@ static void load_text_layers() {
   dateLayer = text_layer_create(GRectZero);
   text_layer_set_background_color(dateLayer, GColorClear);
   text_layer_set_font(dateLayer, dateFont);
+  text_layer_set_text_alignment(dateLayer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(dateLayer));
   layer_set_hidden(text_layer_get_layer(dateLayer), !key_indicator_date);
 }
@@ -332,7 +324,7 @@ static void load_text_layers() {
 static void layout_layers(GRect bounds) {
   //Get alignment. On round displays (Chalk) right/left aligned text can run
   //into the curved bezel, so text is centered there instead.
-#if defined(PBL_ROUND)
+#ifdef PBL_ROUND
   const GTextAlignment align = GTextAlignmentCenter;
   (void)key_indicator_rightalign; // not applicable on round displays
 #else
@@ -340,7 +332,7 @@ static void layout_layers(GRect bounds) {
 #endif
 
   // bounding box with margins depending on the model
-#if defined(PBL_RECT)
+#ifdef PBL_RECT
   const GEdgeInsets margin = GEdgeInsets(bounds.size.h > BASE_H ? 10 : 0, bounds.size.w > BASE_W ? 10 : 0);
   const GRect r_drawing_area = grect_inset(bounds, margin);
 #else
@@ -384,28 +376,43 @@ static void layout_layers(GRect bounds) {
     .size   = { r_text_area.size.w, r_text_area.size.h - 99 }
   });
 
-  // Battery icon - anchored proportionally to the top-left corner, native icon size.
-  const GRect battery_frame = (GRect) {
-    .origin = { bounds.origin.x + scale_x(3, bounds), bounds.origin.y + scale_y(2, bounds) },
+
+  // top bar for battery, date and bluetooth
+  GRect status_bar = (GRect) {
+    .origin = r_drawing_area.origin,
+    .size = GSize(r_drawing_area.size.w, 30)
+  };
+  status_bar.origin.y -= 5;
+
+  // add an inset for round displays
+#if PBL_ROUND
+  status_bar = grect_inset(status_bar, GEdgeInsets(0, 40));
+#endif
+
+  // Battery icon
+  GRect battery_frame = (GRect) {
+    .origin = GPointZero,
     .size = gbitmap_get_bounds(battery_image).size
   };
+  grect_align(&battery_frame, &status_bar, GAlignLeft, false);
   layer_set_frame(bitmap_layer_get_layer(battery_image_layer), battery_frame);
   layer_set_frame(bitmap_layer_get_layer(battery_fill_layer), battery_frame);
 
-  // Bluetooth icon - anchored proportionally to the top-right corner, native icon size.
-  const GSize bt_icon_size = gbitmap_get_bounds(bluetooth_connected_image).size;
-  layer_set_frame(bitmap_layer_get_layer(bluetooth_layer), (GRect) {
-    .origin = { bounds.origin.x + bounds.size.w - bt_icon_size.w - scale_x(2, bounds), bounds.origin.y + scale_y(2, bounds) },
-    .size = bt_icon_size
-  });
+  // Bluetooth icon
+  GRect bt_frame = (GRect) {
+    .origin = GPointZero,
+    .size = gbitmap_get_bounds(bluetooth_connected_image).size
+  };
+  grect_align(&bt_frame, &status_bar, GAlignRight, false);
+  layer_set_frame(bitmap_layer_get_layer(bluetooth_layer), bt_frame);
 
-  const int16_t date_icon_clearance = (battery_frame.size.w > bt_icon_size.w ? battery_frame.size.w : bt_icon_size.w)
-                                       + scale_x(6, bounds);
-  layer_set_frame(text_layer_get_layer(dateLayer), (GRect) {
-    .origin = { bounds.origin.x + date_icon_clearance, bounds.origin.y + scale_y(6, bounds) },
-    .size   = { bounds.size.w - 2 * date_icon_clearance, scale_y(20, bounds) }
-  });
-  text_layer_set_text_alignment(dateLayer, GTextAlignmentCenter);
+  // Date
+  GRect date_frame = (GRect) {
+    .origin = GPointZero,
+    .size = GSize(50, 20)
+  };
+  grect_align(&date_frame, &status_bar, GAlignTop, false);
+  layer_set_frame(text_layer_get_layer(dateLayer), date_frame);
 }
 
 //Called whenever the unobstructed screen area finishes changing (e.g. after
@@ -570,7 +577,7 @@ static void window_load(Window *window) {
   load_bluetooth_layers();
   layout_layers(bounds);
 
-#if !defined(PBL_PLATFORM_APLITE)
+#ifndef PBL_PLATFORM_APLITE
   //Re-run the layout whenever the unobstructed area changes, e.g. Timeline
   //Quick View sliding in/out, so the face adapts to the available space.
   UnobstructedAreaHandlers unobstructed_handlers = {

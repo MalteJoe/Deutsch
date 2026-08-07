@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Emery",
+            "name": "Pebble Time 2 (Emery)",
             "includePath": [
                 "${workspaceFolder}/**",
                 "/home/node/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/emery/include"
