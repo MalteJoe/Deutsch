@@ -35,6 +35,7 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 * Recaclulate the layout when Timeline events are obstructing the screen
 * Added setup for DevContainer and GitHub Actions for automatic builds
 * Use GitHub Pages for the settings
+* make the configuration page work in the cloudpebble emulator
 
 ### Layout
 
@@ -44,7 +45,6 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 ## Planned future changes
 
 * Configuration options to enable/disable the changes [@wolframroesler](https://github.com/wolframroesler) made to the original
-* make the configuration page work in the cloudpebble emulator
 * use versioned configuration pages
 * update the configuration design to pebbles default template and improve saving ux
 * Make it available in the Pebble store

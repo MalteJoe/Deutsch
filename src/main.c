@@ -173,7 +173,7 @@ static void load_battery_layers() {
   battery_image_layer = bitmap_layer_create(GRectZero);
   bitmap_layer_set_bitmap(battery_image_layer, battery_image);
   layer_set_update_proc(bitmap_layer_get_layer(battery_fill_layer), battery_layer_update_callback);
-	
+
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(battery_image_layer));
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(battery_fill_layer));
   if (key_indicator_batt_img) {
@@ -183,7 +183,7 @@ static void load_battery_layers() {
 }
 
 //Bluetooth
-static void toggle_bluetooth_icon(bool connected) { // Toggle bluetooth
+static void toggle_bluetooth_icon(bool connected) {
   if (connected) {
 	if (key_indicator_bt_offonly) {
 	  layer_set_hidden(bitmap_layer_get_layer(bluetooth_layer), true);
@@ -394,25 +394,12 @@ static void layout_layers(GRect bounds) {
     .size   = { r_text_area.size.w, r_text_area.size.h - 99 }
   });
 
-
-  // top bar for battery, date and bluetooth
-  GRect status_bar = (GRect) {
-    .origin = r_drawing_area.origin,
-    .size = GSize(r_drawing_area.size.w, 30)
-  };
-  status_bar.origin.y -= 5;
-
-  // add an inset for round displays
-#if PBL_ROUND
-  status_bar = grect_inset(status_bar, GEdgeInsets(0, 40));
-#endif
-
   // Battery icon
   GRect battery_frame = (GRect) {
     .origin = GPointZero,
     .size = gbitmap_get_bounds(battery_image).size
   };
-  grect_align(&battery_frame, &status_bar, GAlignTopLeft, false);
+  grect_align(&battery_frame, &r_drawing_area, PBL_IF_RECT_ELSE(GAlignTopLeft, GAlignLeft), false);
   layer_set_frame(bitmap_layer_get_layer(battery_image_layer), battery_frame);
   layer_set_frame(bitmap_layer_get_layer(battery_fill_layer), battery_frame);
 
@@ -421,7 +408,7 @@ static void layout_layers(GRect bounds) {
     .origin = GPointZero,
     .size = gbitmap_get_bounds(bluetooth_connected_image).size
   };
-  grect_align(&bt_frame, &status_bar, GAlignTopRight, false);
+  grect_align(&bt_frame, &r_drawing_area, PBL_IF_RECT_ELSE(GAlignTopRight, GAlignRight), false);
   layer_set_frame(bitmap_layer_get_layer(bluetooth_layer), bt_frame);
 
   // Date
@@ -429,7 +416,7 @@ static void layout_layers(GRect bounds) {
     .origin = GPointZero,
     .size = GSize(50, 18)
   };
-  grect_align(&date_frame, &status_bar, GAlignTop, false);
+  grect_align(&date_frame, &r_drawing_area, GAlignTop, false);
   date_frame.origin.y -= 5;
   layer_set_frame(text_layer_get_layer(dateLayer), date_frame);
 }
