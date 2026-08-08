@@ -3,8 +3,8 @@
         {
             "name": "Pebble Time Round (Chalk)",
             "includePath": [
-                "${workspaceFolder}/**",
-                "/home/node/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/chalk/include"
+                "${workspaceFolder}/build/**",
+                "${HOME}/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/chalk/include"
             ],
             "defines": [
                 "PBL_COLOR",
@@ -20,8 +20,8 @@
         {
             "name": "Pebble Time 2 (Emery)",
             "includePath": [
-                "${workspaceFolder}/**",
-                "/home/node/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/emery/include"
+                "${workspaceFolder}/build/**",
+                "${HOME}/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/emery/include"
             ],
             "defines": [
                 "PBL_COLOR",

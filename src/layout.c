@@ -116,7 +116,7 @@ void layout_layers() {
     break;
   case 2:
   default:
-    box_align = GAlignRight;
+    box_align = GAlignBottomRight;
     break;
   };
 #endif
