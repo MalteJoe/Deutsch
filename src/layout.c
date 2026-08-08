@@ -109,10 +109,10 @@ void layout_layers() {
   GAlign box_align;
   switch (key_indicator_text_align) {
   case 0:
-    box_align = GAlignLeft;
+    box_align = GAlignBottomLeft;
     break;
   case 1:
-    box_align = GAlignCenter;
+    box_align = PBL_IF_RECT_ELSE(GAlignBottom, GAlignCenter);
     break;
   case 2:
   default:
@@ -123,47 +123,42 @@ void layout_layers() {
 
   // bounding box with margins depending on the model
 #ifdef PBL_RECT
-  const GEdgeInsets margin = GEdgeInsets(bounds.size.h > BASE_H ? 10 : 0, bounds.size.w > BASE_W ? 10 : 0);
+  const GEdgeInsets margin = GEdgeInsets(bounds.size.h > BASE_H + 10 ? 10 : 0, bounds.size.w > BASE_W + 10 ? 10 : 0);
   const GRect r_drawing_area = grect_inset(bounds, margin);
 #else
   const GRect r_drawing_area = grect_inset(bounds, GEdgeInsets(0, 10));
 #endif
   
   GRect r_text_area = (GRect) {
-    .origin = { 0, 0 },
-    .size = { BASE_W, BASE_H }
+    .origin = GPointZero,
+    .size = { BASE_W, BASE_H - 10 }
   };
   grect_align(&r_text_area, &r_drawing_area, box_align, false);
-  r_text_area.origin.y += 10;
-  r_text_area.size.h -= 10;
-
-  //The fonts are fixed-size bitmap fonts - they don't get bigger on a taller
-  //screen - so the vertical *gap* between the minutes and the hour must stay
-  //fixed too. Scaling it by the screen height (like the horizontal layout
-  //scales width) just stretches empty space in between. Instead, keep the
-  //original pixel spacing.
 
   // Minute Layers
   text_layer_set_text_alignment(minuteLayer_3lines, text_align);
-  layer_set_frame(text_layer_get_layer(minuteLayer_3lines), r_text_area);
+  layer_set_frame(text_layer_get_layer(minuteLayer_3lines), (GRect) {
+    .origin = { r_text_area.origin.x, r_text_area.origin.y + 10 },
+    .size   = { r_text_area.size.w, r_text_area.size.h - 10 }
+  });
 
   text_layer_set_text_alignment(minuteLayer_2longlines, text_align);
   layer_set_frame(text_layer_get_layer(minuteLayer_2longlines), (GRect) {
-    .origin = { r_text_area.origin.x, r_text_area.origin.y + 28 },
-    .size   = { r_text_area.size.w, r_text_area.size.h - 28 }
+    .origin = { r_text_area.origin.x, r_text_area.origin.y + 44 },
+    .size   = { r_text_area.size.w, r_text_area.size.h - 44 }
   });
 
   text_layer_set_text_alignment(minuteLayer_2biglines, text_align);
   layer_set_frame(text_layer_get_layer(minuteLayer_2biglines), (GRect) {
-    .origin = { r_text_area.origin.x, r_text_area.origin.y + 13 },
-    .size   = { r_text_area.size.w, r_text_area.size.h - 13 }
+    .origin = { r_text_area.origin.x, r_text_area.origin.y + 23 },
+    .size   = { r_text_area.size.w, r_text_area.size.h - 23 }
   });
 
   // Hour Layer
   text_layer_set_text_alignment(hourLayer, text_align);
   layer_set_frame(text_layer_get_layer(hourLayer), (GRect) {
-    .origin = { r_text_area.origin.x, r_text_area.origin.y + 99 },
-    .size   = { r_text_area.size.w, r_text_area.size.h - 99 }
+    .origin = { r_text_area.origin.x, r_text_area.origin.y + 109 },
+    .size   = { r_text_area.size.w, r_text_area.size.h - 109 }
   });
 
   // Battery icon
