@@ -24,13 +24,13 @@ static BitmapLayer *battery_image_layer, *battery_fill_layer; //battery icon, sh
 //Battery icon will be red if charge is <= this percentage
 //(could be configurable in the future)
 static const int red_percent = 10;
-static const bool key_indicator_batt_redonly  = true; // show battery icon only if red
+static const bool key_indicator_batt_redonly  = false; // show battery icon only if red
 static uint8_t batteryPercent; //for calculating fill state
 
 // Bluetooth
-static GBitmap *bluetooth_connected_image, *bluetooth_disconnected_image; //Bluetooth images
-static BitmapLayer *bluetooth_layer; //Bluetooth layer
-static const bool key_indicator_bt_offonly    = true; // show Bluetooth icon only if offline
+static GBitmap *bluetooth_connected_image, *bluetooth_disconnected_image; 
+static BitmapLayer *bluetooth_layer; 
+static const bool key_indicator_bt_offonly    = false; // show Bluetooth icon only if offline
 
 void set_theme() {
   APP_LOG(APP_LOG_LEVEL_INFO,"[Deutsch] Setting colors according to theme %d",key_indicator_theme);
@@ -137,36 +137,33 @@ void layout_layers() {
 
   // Minute Layers
   text_layer_set_text_alignment(minuteLayer_3lines, text_align);
-  layer_set_frame(text_layer_get_layer(minuteLayer_3lines), (GRect) {
-    .origin = { r_text_area.origin.x, r_text_area.origin.y + 10 },
-    .size   = { r_text_area.size.w, r_text_area.size.h - 10 }
-  });
+  layer_set_frame(text_layer_get_layer(minuteLayer_3lines), grect_inset(r_text_area, GEdgeInsets(10, 0, 0, 0)));
 
   text_layer_set_text_alignment(minuteLayer_2longlines, text_align);
-  layer_set_frame(text_layer_get_layer(minuteLayer_2longlines), (GRect) {
-    .origin = { r_text_area.origin.x, r_text_area.origin.y + 44 },
-    .size   = { r_text_area.size.w, r_text_area.size.h - 44 }
-  });
+  layer_set_frame(text_layer_get_layer(minuteLayer_2longlines), grect_inset(r_text_area, GEdgeInsets(44, 0, 0, 0)));
 
   text_layer_set_text_alignment(minuteLayer_2biglines, text_align);
-  layer_set_frame(text_layer_get_layer(minuteLayer_2biglines), (GRect) {
-    .origin = { r_text_area.origin.x, r_text_area.origin.y + 23 },
-    .size   = { r_text_area.size.w, r_text_area.size.h - 23 }
-  });
+  layer_set_frame(text_layer_get_layer(minuteLayer_2biglines), grect_inset(r_text_area, GEdgeInsets(23, 0, 0, 0)));
 
   // Hour Layer
   text_layer_set_text_alignment(hourLayer, text_align);
-  layer_set_frame(text_layer_get_layer(hourLayer), (GRect) {
-    .origin = { r_text_area.origin.x, r_text_area.origin.y + 109 },
-    .size   = { r_text_area.size.w, r_text_area.size.h - 109 }
-  });
+  layer_set_frame(text_layer_get_layer(hourLayer), grect_inset(r_text_area, GEdgeInsets(109, 0, 0, 0)));
+
+#ifdef PBL_ROUND
+  // use the window layer so icons don't move on quick view
+  const GRect window_layer = grect_inset(layer_get_bounds(window_get_root_layer(window)), GEdgeInsets(10));
+#endif
 
   // Battery icon
   GRect battery_frame = (GRect) {
     .origin = GPointZero,
     .size = gbitmap_get_bounds(battery_image).size
   };
-  grect_align(&battery_frame, &r_drawing_area, PBL_IF_RECT_ELSE(GAlignTopLeft, GAlignLeft), false);
+#ifdef PBL_RECT
+  grect_align(&battery_frame, &r_drawing_area, GAlignTopLeft, false);
+#else
+  grect_align(&battery_frame, &window_layer, GAlignLeft, false);
+#endif
   layer_set_frame(bitmap_layer_get_layer(battery_image_layer), battery_frame);
   layer_set_frame(bitmap_layer_get_layer(battery_fill_layer), battery_frame);
 
@@ -175,7 +172,11 @@ void layout_layers() {
     .origin = GPointZero,
     .size = gbitmap_get_bounds(bluetooth_connected_image).size
   };
-  grect_align(&bt_frame, &r_drawing_area, PBL_IF_RECT_ELSE(GAlignTopRight, GAlignRight), false);
+#ifdef PBL_RECT
+  grect_align(&bt_frame, &r_drawing_area, GAlignTopRight, false);
+#else
+  grect_align(&bt_frame, &window_layer, GAlignRight, false);
+#endif  
   layer_set_frame(bitmap_layer_get_layer(bluetooth_layer), bt_frame);
 
   // Date
