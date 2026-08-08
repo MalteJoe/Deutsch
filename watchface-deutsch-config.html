@@ -163,16 +163,19 @@
 
       $().ready(function() {
         setUrlOptions();
+        const params = new URLSearchParams(window.location.search);
+        // return_to is provided by CloudPebble, Mobile Pebble App intercepts the pebblejs protocol
+        const return_to = params.get("return_to") ?? "pebblejs://close#"
 
         $("#b-cancel").click(function() {
           console.log("Cancel");
-          document.location = "pebblejs://close";
+          document.location = return_to;
         });
 
         $("#b-submit").click(function() {
           console.log("Submit");
 
-          var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
+          var location = return_to + encodeURIComponent(JSON.stringify(saveOptions()));
           console.log("Warping to: " + location);
           document.location = location;
         });
