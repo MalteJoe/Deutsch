@@ -39,6 +39,15 @@
         </div>
 
         <div data-role="fieldcontain">
+          <label for="KEY_TEXT_ALIGN">Textausrichtung (Für runde Displays immer mittig)</label>
+          <select name="KEY_TEXT_ALIGN" id="KEY_TEXT_ALIGN">
+            <option value="0">Links</option>
+            <option value="1">Mittig</option>
+            <option value="2">Rechts</option>
+          </select>
+        </div>
+
+        <div data-role="fieldcontain">
           <label for="KEY_FUZZY">Fuzzy-Modus (Uhrzeit umgangssprachlich)</label>
           <select name="KEY_FUZZY" id="KEY_FUZZY" data-role="slider">
             <option value="off">Nein</option>
@@ -122,7 +131,8 @@
           'KEY_TEXT_WIEN': $("#KEY_TEXT_WIEN").val(),
           'KEY_DATE': $("#KEY_DATE").val(),
           'KEY_WEEKDAY': $("#KEY_WEEKDAY").val(),
-          'KEY_THEME': $("#KEY_THEME").val()
+          'KEY_THEME': $("#KEY_THEME").val(),
+          'KEY_TEXT_ALIGN': $("#KEY_TEXT_ALIGN").val(),
         }
         return options;
       }
@@ -141,7 +151,7 @@
           var field = $("#"+key);
           if (field !== null) {
             var value = decodeURIComponent(params[key]);
-            if (key=='KEY_THEME') {
+            if (key=='KEY_THEME' || key=='KEY_TEXT_ALIGN') {
               $("#"+key).val(value);
               $("#"+key).selectmenu("refresh");
             } else {

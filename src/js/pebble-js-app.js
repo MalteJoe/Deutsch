@@ -55,7 +55,8 @@ Pebble.addEventListener("webviewclosed", function(e) {
     4: options.KEY_TEXT_NRW,
     5: options.KEY_TEXT_WIEN,
     6: options.KEY_DATE,
-    7: options.KEY_THEME
+    7: options.KEY_THEME,
+    8: options.KEY_TEXT_ALIGN,
   };
 
   console.log("Trace: Dict Sending - " + JSON.stringify(dict));

@@ -17,30 +17,31 @@ static TextLayer *minuteLayer_2longlines, *minuteLayer_3lines, *minuteLayer_2big
 
 //Set key IDs
 enum {
-  KEY_FUZZY     = 0,
-  KEY_BLUETOOTH = 1,
-  KEY_VIBE      = 2,
-  KEY_BATT_IMG  = 3,
-  KEY_TEXT_NRW  = 4,
-  KEY_TEXT_WIEN = 5,
-  KEY_DATE      = 6,
-  KEY_THEME     = 7,
+  KEY_FUZZY       = 0,
+  KEY_BLUETOOTH   = 1,
+  KEY_VIBE        = 2,
+  KEY_BATT_IMG    = 3,
+  KEY_TEXT_NRW    = 4,
+  KEY_TEXT_WIEN   = 5,
+  KEY_DATE        = 6,
+  KEY_THEME       = 7,
+  KEY_TEXT_ALIGN  = 8,
 };
 
 //Default key values
-static bool key_indicator_fuzzy 	= true;	    //true = don't be too exact about the time
-static bool key_indicator_bluetooth	= true;		//true = bluetooth icon on
-static bool key_indicator_vibe 		= true;		//true = vibe on bluetooth disconnect
-static bool key_indicator_batt_img	= true;		//true = show batt usage image
-static bool key_indicator_text_nrw	= false;	//true = say "viertel x+1" at xx:45
-static bool key_indicator_text_wien	= false;	//true = say "viertel x+1" at xx:15
-static bool key_indicator_date		= true;		//true = show date
-static int  key_indicator_theme     = 0;        //Color Theme
+static bool key_indicator_fuzzy     = true;   // true = don't be too exact about the time
+static bool key_indicator_bluetooth = true;   // true = bluetooth icon on
+static bool key_indicator_vibe      = true;   // true = vibe on bluetooth disconnect
+static bool key_indicator_batt_img  = true;   // true = show batt usage image
+static bool key_indicator_text_nrw  = false;  // true = say "viertel x+1" at xx:45
+static bool key_indicator_text_wien = false;  // true = say "viertel x+1" at xx:15
+static bool key_indicator_date      = true;   // true = show date
+static int key_indicator_theme      = 0;      // Color Theme
+static int key_indicator_text_align = 2;      // Text alignment - 0 = left, 1 = center, 2 = right
 
 // The following are not yet configurable, but let's pretend they are:
-static const bool key_indicator_batt_redonly = true;	// true = show battery icon only if red
-static const bool key_indicator_bt_offonly = true;		// true = show Bluetooth icon only if offline
-static const bool key_indicator_rightalign = true;		// true = right aligned text, false=left aligned
+static const bool key_indicator_batt_redonly = true;  // true = show battery icon only if red
+static const bool key_indicator_bt_offonly = true;    // true = show Bluetooth icon only if offline
 
 //Reference resolution the original layout was designed for (Pebble Classic / Aplite).
 //All layout coordinates below are expressed relative to this size and then
@@ -135,8 +136,8 @@ static void change_battery_icon(bool charging) {
 //Update battery icon or hide it
 static void update_battery(BatteryChargeState charge_state) {
   const bool show = key_indicator_batt_img
-    ? (key_indicator_batt_redonly ? charge_state.charge_percent <= red_percent : true)
-	: false;
+  ? (key_indicator_batt_redonly ? charge_state.charge_percent <= red_percent : true)
+  : false;
 
   if (show) {
     batteryPercent = charge_state.charge_percent;
@@ -230,7 +231,7 @@ static void process_tuple(const Tuple *t) {
       break;
     }
     case KEY_BLUETOOTH: {
-	  key_indicator_bluetooth = !strcmp(t->value->cstring,"on");
+      key_indicator_bluetooth = !strcmp(t->value->cstring,"on");
       layer_set_hidden(bitmap_layer_get_layer(bluetooth_layer), !key_indicator_bluetooth);
       if (key_indicator_bluetooth) {
         bluetooth_connection_service_subscribe(bluetooth_connection_callback);
@@ -241,31 +242,30 @@ static void process_tuple(const Tuple *t) {
       break;
     }
     case KEY_VIBE: {
-		  key_indicator_vibe = !strcmp(t->value->cstring,"on");
+      key_indicator_vibe = !strcmp(t->value->cstring,"on");
       break;
     }
     case KEY_BATT_IMG: {
-		  key_indicator_batt_img = !strcmp(t->value->cstring,"on");
+      key_indicator_batt_img = !strcmp(t->value->cstring, "on");
       update_battery(battery_state_service_peek());
-      
+
       if (key_indicator_batt_img) {
         battery_state_service_subscribe(&update_battery);
-      }
-      else {
+      } else {
         battery_state_service_unsubscribe();
       }
       break;
     }
     case KEY_TEXT_NRW: {
-		  key_indicator_text_nrw = !strcmp(t->value->cstring,"on");
+      key_indicator_text_nrw = !strcmp(t->value->cstring, "on");
       break;
     }
     case KEY_TEXT_WIEN: {
-		  key_indicator_text_wien = !strcmp(t->value->cstring,"on");
+      key_indicator_text_wien = !strcmp(t->value->cstring, "on");
       break;
     }
     case KEY_DATE: {
-      key_indicator_date = !strcmp(t->value->cstring,"on");
+      key_indicator_date = !strcmp(t->value->cstring, "on");
       layer_set_hidden(text_layer_get_layer(dateLayer), !key_indicator_date);
       break;
     }
@@ -273,15 +273,19 @@ static void process_tuple(const Tuple *t) {
       key_indicator_theme = atoi(t->value->cstring);
       break;
     }
+    case KEY_TEXT_ALIGN: {
+      key_indicator_text_align = atoi(t->value->cstring);
+      break;
+    }
   }
 }
 
 static void load_text_layers() {
   //Load Fonts
-  GFont bitham 			= fonts_get_system_font(FONT_KEY_BITHAM_42_LIGHT);
-  GFont bithamBold 		= fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD);
-  GFont dateFont		= fonts_get_system_font(FONT_KEY_GOTHIC_18);
-  ResHandle robotoLight	= resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_34);
+  GFont bitham          = fonts_get_system_font(FONT_KEY_BITHAM_42_LIGHT);
+  GFont bithamBold      = fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD);
+  GFont dateFont        = fonts_get_system_font(FONT_KEY_GOTHIC_18);
+  ResHandle robotoLight = resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_34);
 
   //Actual position/size/alignment is applied by layout_layers(); GRectZero
   //here is just a valid placeholder for text_layer_create().
@@ -326,10 +330,23 @@ static void layout_layers(GRect bounds) {
   //Get alignment. On round displays (Chalk) right/left aligned text can run
   //into the curved bezel, so text is centered there instead.
 #ifdef PBL_ROUND
-  const GTextAlignment align = GTextAlignmentCenter;
-  (void)key_indicator_rightalign; // not applicable on round displays
+  const GTextAlignment text_align = GTextAlignmentCenter;
+  const GAlign box_align = GAlignCenter;
 #else
-  const GTextAlignment align = key_indicator_rightalign ? GTextAlignmentRight : GTextAlignmentLeft;
+  const GTextAlignment text_align = key_indicator_text_align;
+  GAlign box_align;
+  switch (key_indicator_text_align) {
+  case 0:
+    box_align = GAlignLeft;
+    break;
+  case 1:
+    box_align = GAlignCenter;
+    break;
+  case 2:
+  default:
+    box_align = GAlignRight;
+    break;
+  };
 #endif
 
   // bounding box with margins depending on the model
@@ -344,7 +361,7 @@ static void layout_layers(GRect bounds) {
     .origin = { 0, 0 },
     .size = { BASE_W, BASE_H }
   };
-  grect_align(&r_text_area, &r_drawing_area, PBL_IF_ROUND_ELSE(GAlignCenter, key_indicator_rightalign ? GAlignRight : GAlignLeft), false);
+  grect_align(&r_text_area, &r_drawing_area, box_align, false);
   r_text_area.origin.y += 10;
   r_text_area.size.h -= 10;
 
@@ -355,23 +372,23 @@ static void layout_layers(GRect bounds) {
   //original pixel spacing.
 
   // Minute Layers
-  text_layer_set_text_alignment(minuteLayer_3lines, align);
+  text_layer_set_text_alignment(minuteLayer_3lines, text_align);
   layer_set_frame(text_layer_get_layer(minuteLayer_3lines), r_text_area);
 
-  text_layer_set_text_alignment(minuteLayer_2longlines, align);
+  text_layer_set_text_alignment(minuteLayer_2longlines, text_align);
   layer_set_frame(text_layer_get_layer(minuteLayer_2longlines), (GRect) {
     .origin = { r_text_area.origin.x, r_text_area.origin.y + 24 },
     .size   = { r_text_area.size.w, r_text_area.size.h - 24 }
   });
 
-  text_layer_set_text_alignment(minuteLayer_2biglines, align);
+  text_layer_set_text_alignment(minuteLayer_2biglines, text_align);
   layer_set_frame(text_layer_get_layer(minuteLayer_2biglines), (GRect) {
     .origin = { r_text_area.origin.x, r_text_area.origin.y + 13 },
     .size   = { r_text_area.size.w, r_text_area.size.h - 13 }
   });
 
   // Hour Layer
-  text_layer_set_text_alignment(hourLayer, align);
+  text_layer_set_text_alignment(hourLayer, text_align);
   layer_set_frame(text_layer_get_layer(hourLayer), (GRect) {
     .origin = { r_text_area.origin.x, r_text_area.origin.y + 99 },
     .size   = { r_text_area.size.w, r_text_area.size.h - 99 }
@@ -544,10 +561,11 @@ static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
 //If a Key is changing, call process_tuple
 static void in_received_handler(DictionaryIterator *iter, void *context) {
   for(Tuple *t=dict_read_first(iter); t!=NULL; t=dict_read_next(iter)) {
-      process_tuple(t);
+    process_tuple(t);
   }
 
   set_theme();
+  layout_layers(layer_get_unobstructed_bounds(window_get_root_layer(window)));
   const time_t now = time(NULL);
   display_time(localtime(&now));
 }
@@ -558,15 +576,16 @@ static void window_load(Window *window) {
   app_message_open(512, 512); //Key buffer in- and outbound
   
   //Load value from storage, if storage is empty load default value
-  key_indicator_fuzzy =	    persist_exists(KEY_FUZZY) 	    ? persist_read_bool(KEY_FUZZY) 	    : key_indicator_fuzzy;
-  key_indicator_bluetooth =	persist_exists(KEY_BLUETOOTH)	? persist_read_bool(KEY_BLUETOOTH) 	: key_indicator_bluetooth;
-  key_indicator_vibe =		persist_exists(KEY_VIBE) 		? persist_read_bool(KEY_VIBE) 		: key_indicator_vibe;
-  key_indicator_batt_img =	persist_exists(KEY_BATT_IMG) 	? persist_read_bool(KEY_BATT_IMG) 	: key_indicator_batt_img;
-  key_indicator_text_nrw =	persist_exists(KEY_TEXT_NRW) 	? persist_read_bool(KEY_TEXT_NRW) 	: key_indicator_text_nrw;
-  key_indicator_text_wien =	persist_exists(KEY_TEXT_WIEN) 	? persist_read_bool(KEY_TEXT_WIEN)	: key_indicator_text_wien;
-  key_indicator_date =		persist_exists(KEY_DATE) 		? persist_read_bool(KEY_DATE) 		: key_indicator_date;
-  key_indicator_theme =	    persist_exists(KEY_THEME) 		? persist_read_bool(KEY_THEME) 		: key_indicator_theme;
-  
+  key_indicator_fuzzy       = persist_exists(KEY_FUZZY)       ? persist_read_bool(KEY_FUZZY)      : key_indicator_fuzzy;
+  key_indicator_bluetooth   = persist_exists(KEY_BLUETOOTH)   ? persist_read_bool(KEY_BLUETOOTH)  : key_indicator_bluetooth;
+  key_indicator_vibe        = persist_exists(KEY_VIBE)        ? persist_read_bool(KEY_VIBE)       : key_indicator_vibe;
+  key_indicator_batt_img    = persist_exists(KEY_BATT_IMG)    ? persist_read_bool(KEY_BATT_IMG)   : key_indicator_batt_img;
+  key_indicator_text_nrw    = persist_exists(KEY_TEXT_NRW)    ? persist_read_bool(KEY_TEXT_NRW)   : key_indicator_text_nrw;
+  key_indicator_text_wien   = persist_exists(KEY_TEXT_WIEN)   ? persist_read_bool(KEY_TEXT_WIEN)  : key_indicator_text_wien;
+  key_indicator_date        = persist_exists(KEY_DATE)        ? persist_read_bool(KEY_DATE)       : key_indicator_date;
+  key_indicator_theme       = persist_exists(KEY_THEME)       ? persist_read_int(KEY_THEME)       : key_indicator_theme;
+  key_indicator_text_align  = persist_exists(KEY_TEXT_ALIGN)  ? persist_read_int(KEY_TEXT_ALIGN)  : key_indicator_text_align;
+
   //Get the actual usable bounds of this watch's screen (varies by platform:
   //144x168 on Aplite/Basalt/Diorite/Flint, 180x180 round on Chalk, 200x228 on
   //Emery, ...) instead of assuming the old fixed 144x168 Aplite resolution.
@@ -632,14 +651,15 @@ static void deinit(void) {
   bitmap_layer_destroy(battery_image_layer);
     
   //Save keys to persistent storage
-  persist_write_bool(KEY_FUZZY,     key_indicator_fuzzy);
+  persist_write_bool(KEY_FUZZY, key_indicator_fuzzy);
   persist_write_bool(KEY_BLUETOOTH, key_indicator_bluetooth);
-  persist_write_bool(KEY_VIBE,      key_indicator_vibe);
-  persist_write_bool(KEY_BATT_IMG,  key_indicator_batt_img);
-  persist_write_bool(KEY_TEXT_NRW,  key_indicator_text_nrw);
+  persist_write_bool(KEY_VIBE, key_indicator_vibe);
+  persist_write_bool(KEY_BATT_IMG, key_indicator_batt_img);
+  persist_write_bool(KEY_TEXT_NRW, key_indicator_text_nrw);
   persist_write_bool(KEY_TEXT_WIEN, key_indicator_text_wien);
-  persist_write_bool(KEY_DATE,      key_indicator_date);
-  persist_write_int (KEY_THEME,     key_indicator_theme);
+  persist_write_bool(KEY_DATE, key_indicator_date);
+  persist_write_int(KEY_THEME, key_indicator_theme);
+  persist_write_int(KEY_TEXT_ALIGN, key_indicator_text_align);
 }
 
 int main(void) {
