@@ -39,10 +39,12 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 ### Layout
 
 * On larger displays the text is padded to the bottom right with some margin to the screen borders
+* Added configuration option for rectangle displays for text alignment
 
 ## Planned future changes
 
 * Configuration options to enable/disable the changes [@wolframroesler](https://github.com/wolframroesler) made to the original
-* make the configuration work in the cloudpebble emulator
+* make the configuration page work in the cloudpebble emulator
+* use versioned configuration pages
 * update the configuration design to pebbles default template and improve saving ux
 * Make it available in the Pebble store

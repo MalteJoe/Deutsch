@@ -1,6 +1,23 @@
 {
     "configurations": [
         {
+            "name": "Pebble Time Round (Chalk)",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/node/.local/share/pebble-sdk/SDKs/current/sdk-core/pebble/chalk/include"
+            ],
+            "defines": [
+                "PBL_COLOR",
+                "PBL_ROUND",
+                "PBL_PLATFORM_CHALK",
+                "PBL_DISPLAY_WIDTH=180",
+                "PBL_DISPLAY_HEIGHT=180"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++17"
+        },
+        {
             "name": "Pebble Time 2 (Emery)",
             "includePath": [
                 "${workspaceFolder}/**",
