@@ -38,9 +38,9 @@ static bool key_indicator_date		= true;		//true = show date
 static int  key_indicator_theme     = 0;        //Color Theme
 
 // The following are not yet configurable, but let's pretend they are:
-static const bool key_indicator_batt_redonly = false;	// true = show battery icon only if red
-static const bool key_indicator_bt_offonly = false;		// true = show Bluetooth icon only if offline
-static const bool key_indicator_rightalign = false;		// true = right aligned text, false=left aligned
+static const bool key_indicator_batt_redonly = true;	// true = show battery icon only if red
+static const bool key_indicator_bt_offonly = true;		// true = show Bluetooth icon only if offline
+static const bool key_indicator_rightalign = true;		// true = right aligned text, false=left aligned
 
 //Reference resolution the original layout was designed for (Pebble Classic / Aplite).
 //All layout coordinates below are expressed relative to this size and then
