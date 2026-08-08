@@ -1,11 +1,11 @@
 #include "layout.h"
 
+#include "battery.h"
+#include "bluetooth.h"
+#include "display_time.h"
+#include "settings.h"
+
 //Reference resolution the original layout was designed for (Pebble Classic / Aplite).
-//All layout coordinates below are expressed relative to this size and then
-//scaled to whatever the actual watch's display resolution is, so the face
-//looks right on every generation (Aplite 144x168, Basalt/Diorite/Flint 144x168,
-//Chalk 180x180 round, Emery 200x228, ...) instead of only filling the
-//top-left 144x168 corner of larger screens.
 #define BASE_W 144
 #define BASE_H 168
 
@@ -18,12 +18,9 @@ static TextLayer
   *hourLayer, 
   *dateLayer;
 
-static Layer *battery_layer;
-
-// Bluetooth
-static GBitmap *bluetooth_connected_image, *bluetooth_disconnected_image; 
-static BitmapLayer *bluetooth_layer; 
-static const bool key_indicator_bt_offonly    = false; // show Bluetooth icon only if offline
+static Layer 
+  *battery_layer,
+  *bluetooth_layer;
 
 void set_theme() {
   APP_LOG(APP_LOG_LEVEL_INFO,"[Deutsch] Setting colors according to theme %d",key_indicator_theme);
@@ -142,31 +139,19 @@ void layout_layers() {
   text_layer_set_text_alignment(hourLayer, text_align);
   layer_set_frame(text_layer_get_layer(hourLayer), grect_inset(r_text_area, GEdgeInsets(109, 0, 0, 0)));
 
-#ifdef PBL_ROUND
-  // use the window layer so icons don't move on quick view
-  const GRect window_layer = grect_inset(layer_get_bounds(window_get_root_layer(window)), GEdgeInsets(10));
-#endif
-
-  // Battery icon
   GRect battery_frame = layer_get_bounds(battery_layer);
+  GRect bt_frame = layer_get_bounds(bluetooth_layer);
 #ifdef PBL_RECT
   grect_align(&battery_frame, &r_drawing_area, GAlignTopLeft, false);
-#else
-  grect_align(&battery_frame, &window_layer, GAlignLeft, false);
-#endif
-  layer_set_frame(battery_layer, battery_frame);
-
-  // Bluetooth icon
-  GRect bt_frame = (GRect) {
-    .origin = GPointZero,
-    .size = gbitmap_get_bounds(bluetooth_connected_image).size
-  };
-#ifdef PBL_RECT
   grect_align(&bt_frame, &r_drawing_area, GAlignTopRight, false);
 #else
+  // use the window layer so icons don't move on quick view
+  const GRect window_layer = grect_inset(layer_get_bounds(window_get_root_layer(window)), GEdgeInsets(10));
+  grect_align(&battery_frame, &window_layer, GAlignLeft, false);
   grect_align(&bt_frame, &window_layer, GAlignRight, false);
-#endif  
-  layer_set_frame(bitmap_layer_get_layer(bluetooth_layer), bt_frame);
+#endif
+  layer_set_frame(battery_layer, battery_frame);
+  layer_set_frame(bluetooth_layer, bt_frame);
 
   // Date
   GRect date_frame = (GRect) {
@@ -249,37 +234,6 @@ void update_time_text_2_big_lines(const char* minutes, const char* hours, const 
   text_layer_set_text(dateLayer, date);
 }
 
-//Bluetooth
-void toggle_bluetooth_icon(bool connected) {
-  if (connected) {
-    if (key_indicator_bt_offonly) {
-      layer_set_hidden(bitmap_layer_get_layer(bluetooth_layer), true);
-    } else {
-      bitmap_layer_set_bitmap(bluetooth_layer, bluetooth_connected_image);
-      layer_set_hidden(bitmap_layer_get_layer(bluetooth_layer), false);
-  	}
-  } else {
-    bitmap_layer_set_bitmap(bluetooth_layer, bluetooth_disconnected_image);
-    layer_set_hidden(bitmap_layer_get_layer(bluetooth_layer), false);
-  }
-}
-
-static void load_bluetooth_layers() {
-  bluetooth_connected_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_CONNECTED);
-  bluetooth_disconnected_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_DISCONNECTED);
-  //Actual position/size is applied by layout_layers() once all resources
-  //exist; GRectZero here is just a valid placeholder for layer_create().
-  bluetooth_layer = bitmap_layer_create(GRectZero);
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(bluetooth_layer));
-  if (key_indicator_bluetooth) {
-    bluetooth_connection_service_subscribe(toggle_bluetooth_icon);
-    toggle_bluetooth_icon(bluetooth_connection_service_peek());
-    layer_set_hidden(bitmap_layer_get_layer(bluetooth_layer), false);
-  } else {
-    layer_set_hidden(bitmap_layer_get_layer(bluetooth_layer), true);
-  }
-}
-
 static void window_load(Window *window) {
   //Get the actual usable bounds of this watch's screen (varies by platform:
   //144x168 on Aplite/Basalt/Diorite/Flint, 180x180 round on Chalk, 200x228 on
@@ -291,7 +245,8 @@ static void window_load(Window *window) {
   load_text_layers();
   battery_layer = battery_init();
   layer_add_child(window_layer, battery_layer);
-  load_bluetooth_layers();
+  bluetooth_layer = bluetooth_init();
+  layer_add_child(window_layer, bluetooth_layer);
   layout_layers(bounds);
 
   set_theme();
@@ -306,11 +261,8 @@ static void window_unload(Window *window) {
   text_layer_destroy(hourLayer);
   text_layer_destroy(dateLayer);
 
-  layer_remove_from_parent(bitmap_layer_get_layer(bluetooth_layer));
-  bitmap_layer_destroy(bluetooth_layer);
-  gbitmap_destroy(bluetooth_connected_image);
-  gbitmap_destroy(bluetooth_disconnected_image);
-
+  layer_remove_from_parent(bluetooth_layer);
+  bluetooth_deinit();
   layer_remove_from_parent(battery_layer);
   battery_deinit();
 }

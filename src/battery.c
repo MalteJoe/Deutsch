@@ -1,11 +1,13 @@
 # include "battery.h"
 
+#include "settings.h"
+
 static BitmapLayer *battery_image_layer, *battery_fill_layer;
 static GBitmap *battery_image;
 
 //Battery icon will be red if charge is <= this percentage
 //(could be configurable in the future)
-static const int red_percent = 10;
+static const int red_percent = 20;
 static const bool key_indicator_batt_redonly = false; // show battery icon only if red
 static uint8_t batteryPercent; //for calculating fill state
 

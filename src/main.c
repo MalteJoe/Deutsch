@@ -1,14 +1,10 @@
 #include <pebble.h>
 
+#include "battery.h"
+#include "bluetooth.h"
+#include "display_time.h"
 #include "layout.h"
 #include "settings.h"
-#include "display_time.h"
-
-/*
-  ##################################
-  ######## Custom Functions ########
-  ##################################
-*/
 
 //If a Key is changing, do following:
 static void process_tuple(const Tuple *t) {

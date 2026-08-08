@@ -1,5 +1,8 @@
 #include "display_time.h"
 
+#include "layout.h"
+#include "settings.h"
+
 void display_time(const struct tm *time) {
   //Hour Texts
   static const char *const hour_string[] = {

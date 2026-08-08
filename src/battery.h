@@ -1,7 +1,6 @@
 #pragma once
 
 #include <pebble.h>
-#include "settings.h"
 
 //Battery - set image if charging, or set empty battery image if not charging
 void change_battery_icon(bool charging);
