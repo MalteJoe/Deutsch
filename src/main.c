@@ -98,21 +98,13 @@ static void init(void) {
 
   load_persisted_settings();
 
-  init_layout();
+  layout_init();
 
-#ifndef PBL_PLATFORM_APLITE
-  //Re-run the layout whenever the unobstructed area changes, e.g. Timeline
-  //Quick View sliding in/out, so the face adapts to the available space.
-  UnobstructedAreaHandlers unobstructed_handlers = {
-    .did_change = layout_layers
-  };
-#endif
-  unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
   tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
 }
 
 static void deinit(void) {
-  destroy_layout();
+  layout_deinit();
   tick_timer_service_unsubscribe();
   unobstructed_area_service_unsubscribe();
   bluetooth_connection_service_unsubscribe();

@@ -18,14 +18,7 @@ static TextLayer
   *hourLayer, 
   *dateLayer;
 
-// Battery
-static GBitmap *battery_image;
-static BitmapLayer *battery_image_layer, *battery_fill_layer; //battery icon, show fill status
-//Battery icon will be red if charge is <= this percentage
-//(could be configurable in the future)
-static const int red_percent = 10;
-static const bool key_indicator_batt_redonly  = false; // show battery icon only if red
-static uint8_t batteryPercent; //for calculating fill state
+static Layer *battery_layer;
 
 // Bluetooth
 static GBitmap *bluetooth_connected_image, *bluetooth_disconnected_image; 
@@ -155,17 +148,13 @@ void layout_layers() {
 #endif
 
   // Battery icon
-  GRect battery_frame = (GRect) {
-    .origin = GPointZero,
-    .size = gbitmap_get_bounds(battery_image).size
-  };
+  GRect battery_frame = layer_get_bounds(battery_layer);
 #ifdef PBL_RECT
   grect_align(&battery_frame, &r_drawing_area, GAlignTopLeft, false);
 #else
   grect_align(&battery_frame, &window_layer, GAlignLeft, false);
 #endif
-  layer_set_frame(bitmap_layer_get_layer(battery_image_layer), battery_frame);
-  layer_set_frame(bitmap_layer_get_layer(battery_fill_layer), battery_frame);
+  layer_set_frame(battery_layer, battery_frame);
 
   // Bluetooth icon
   GRect bt_frame = (GRect) {
@@ -260,67 +249,6 @@ void update_time_text_2_big_lines(const char* minutes, const char* hours, const 
   text_layer_set_text(dateLayer, date);
 }
 
-//Battery - set image if charging, or set empty battery image if not charging
-void change_battery_icon(bool charging) {
-  gbitmap_destroy(battery_image);
-  if(charging) {
-    battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_CHARGE);
-  } else {
-    battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY);
-  }  
-  bitmap_layer_set_bitmap(battery_image_layer, battery_image);
-  layer_mark_dirty(bitmap_layer_get_layer(battery_image_layer));
-}
-
-//Update battery icon or hide it
-void update_battery(BatteryChargeState charge_state) {
-  const bool show = key_indicator_batt_img
-  ? (key_indicator_batt_redonly ? charge_state.charge_percent <= red_percent : true)
-  : false;
-
-  if (show) {
-    batteryPercent = charge_state.charge_percent;
-    layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), false);
-    if(batteryPercent==100) {
-      change_battery_icon(false);
-      layer_set_hidden(bitmap_layer_get_layer(battery_fill_layer), false);
-    }
-    layer_set_hidden(bitmap_layer_get_layer(battery_fill_layer), charge_state.is_charging);
-    change_battery_icon(charge_state.is_charging);
-  } else {
-    layer_set_hidden(bitmap_layer_get_layer(battery_fill_layer), true);
-    layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), true);
-  }
-}
-
-//draw the remaining battery percentage
-static void battery_layer_update_callback(Layer *me, GContext* ctx) {
-  const GColor color = batteryPercent <= red_percent ? GColorRed : key_indicator_theme==4 ? GColorBlack : GColorWhite;
-  //Antialiasing is on by default where the platform supports it, but we set
-  //it explicitly here since this is one of the few places we draw manually.
-  graphics_context_set_antialiased(ctx, true);
-  graphics_context_set_stroke_color(ctx, color);
-  graphics_context_set_fill_color(ctx, color);
-  graphics_fill_rect(ctx, GRect(2, 2, batteryPercent/100.0*11.0, 5), 0, GCornerNone);
-}
-
-static void load_battery_layers() {
-  battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY);
-  //Actual position/size is applied by layout_layers() once all resources
-  //exist; GRectZero here is just a valid placeholder for layer_create().
-  battery_fill_layer = bitmap_layer_create(GRectZero);
-  battery_image_layer = bitmap_layer_create(GRectZero);
-  bitmap_layer_set_bitmap(battery_image_layer, battery_image);
-  layer_set_update_proc(bitmap_layer_get_layer(battery_fill_layer), battery_layer_update_callback);
-
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(battery_image_layer));
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(battery_fill_layer));
-  if (key_indicator_batt_img) {
-    battery_state_service_subscribe(&update_battery);
-  }
-  update_battery(battery_state_service_peek());
-}
-
 //Bluetooth
 void toggle_bluetooth_icon(bool connected) {
   if (connected) {
@@ -361,7 +289,8 @@ static void window_load(Window *window) {
 
   //Create all layers, then position them for the current bounds.
   load_text_layers();
-  load_battery_layers();
+  battery_layer = battery_init();
+  layer_add_child(window_layer, battery_layer);
   load_bluetooth_layers();
   layout_layers(bounds);
 
@@ -382,22 +311,28 @@ static void window_unload(Window *window) {
   gbitmap_destroy(bluetooth_connected_image);
   gbitmap_destroy(bluetooth_disconnected_image);
 
-  layer_remove_from_parent(bitmap_layer_get_layer(battery_fill_layer));
-  bitmap_layer_destroy(battery_fill_layer);
-  gbitmap_destroy(battery_image);
-  layer_remove_from_parent(bitmap_layer_get_layer(battery_image_layer));
-  bitmap_layer_destroy(battery_image_layer);
+  layer_remove_from_parent(battery_layer);
+  battery_deinit();
 }
 
-void init_layout() {
+void layout_init() {
   window = window_create();
   window_set_window_handlers(window, (WindowHandlers) {
     .load = window_load,
     .unload = window_unload,
   });
-  window_stack_push(window, true); //Push to Display
+  window_stack_push(window, true);
+
+#ifndef PBL_PLATFORM_APLITE
+  //Re-run the layout whenever the unobstructed area changes, e.g. Timeline
+  //Quick View sliding in/out, so the face adapts to the available space.
+  UnobstructedAreaHandlers unobstructed_handlers = {
+    .did_change = layout_layers
+  };
+#endif
+  unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
 }
 
-void destroy_layout() {
+void layout_deinit() {
   window_destroy(window);
 }
