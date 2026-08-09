@@ -79,9 +79,10 @@
         
         <div data-role="fieldcontain">
           <label for="KEY_BLUETOOTH">Bluetooth-Icon anzeigen</label>
-          <select name="KEY_BLUETOOTH" id="KEY_BLUETOOTH" data-role="slider">
-            <option value="off">Nein</option>
-            <option value="on">Ja</option>
+          <select name="KEY_BLUETOOTH" id="KEY_BLUETOOTH">
+            <option value="0">Nie</option>
+            <option value="1">Wenn nicht verbunden</option>
+            <option value="2">Immer</option>
           </select>
         </div>
 
@@ -107,15 +108,15 @@
     <script>
       function saveOptions() {
         var options = {
-          'KEY_FUZZY': $("#KEY_FUZZY").val(),
-          'KEY_BLUETOOTH': $("#KEY_BLUETOOTH").val(),
-          'KEY_VIBE': $("#KEY_VIBE").val(),
-          'KEY_BATT_IMG': $("#KEY_BATT_IMG").val(),
-          'KEY_TEXT_NRW': $("#KEY_TEXT_NRW").val(),
-          'KEY_TEXT_WIEN': $("#KEY_TEXT_WIEN").val(),
-          'KEY_DATE': $("#KEY_DATE").val(),
-          'KEY_THEME': $("#KEY_THEME").val(),
-          'KEY_TEXT_ALIGN': $("#KEY_TEXT_ALIGN").val(),
+          'KEY_FUZZY':      "on" == $("#KEY_FUZZY").val(),
+          'KEY_BLUETOOTH':  Number( $("#KEY_BLUETOOTH").val()),
+          'KEY_VIBE':       "on" == $("#KEY_VIBE").val(),
+          'KEY_BATT_IMG':   "on" == $("#KEY_BATT_IMG").val(),
+          'KEY_TEXT_NRW':   "on" == $("#KEY_TEXT_NRW").val(),
+          'KEY_TEXT_WIEN':  "on" == $("#KEY_TEXT_WIEN").val(),
+          'KEY_DATE':       "on" == $("#KEY_DATE").val(),
+          'KEY_THEME':      Number( $("#KEY_THEME").val()),
+          'KEY_TEXT_ALIGN': Number( $("#KEY_TEXT_ALIGN").val()),
         }
         return options;
       }
@@ -134,7 +135,7 @@
           var field = $("#"+key);
           if (field !== null) {
             var value = decodeURIComponent(params[key]);
-            if (key=='KEY_THEME' || key=='KEY_TEXT_ALIGN') {
+            if (key=='KEY_THEME' || key=='KEY_TEXT_ALIGN' || key=='KEY_BLUETOOTH') {
               $("#"+key).val(value);
               $("#"+key).selectmenu("refresh");
             } else {
@@ -147,7 +148,7 @@
       $().ready(function() {
         setUrlOptions();
         const params = new URLSearchParams(window.location.search);
-        // return_to is provided by CloudPebble, Mobile Pebble App intercepts the pebblejs protocol
+        // return_to is provided by CloudPebble/Emulator; Mobile Pebble App intercepts the pebblejs protocol
         const return_to = params.get("return_to") ?? "pebblejs://close#"
 
         $("#b-cancel").click(function() {

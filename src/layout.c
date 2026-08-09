@@ -243,9 +243,9 @@ static void window_load(Window *window) {
 
   //Create all layers, then position them for the current bounds.
   load_text_layers();
-  battery_layer = battery_init();
+  battery_layer = battery_layer_create();
   layer_add_child(window_layer, battery_layer);
-  bluetooth_layer = bluetooth_init();
+  bluetooth_layer = bluetooth_layer_create();
   layer_add_child(window_layer, bluetooth_layer);
   layout_layers(bounds);
 
@@ -262,9 +262,9 @@ static void window_unload(Window *window) {
   text_layer_destroy(dateLayer);
 
   layer_remove_from_parent(bluetooth_layer);
-  bluetooth_deinit();
+  bluetooth_layer_destroy();
   layer_remove_from_parent(battery_layer);
-  battery_deinit();
+  battery_layer_destroy();
 }
 
 void layout_init() {

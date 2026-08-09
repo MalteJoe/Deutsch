@@ -7,12 +7,12 @@ static GBitmap *battery_image;
 
 //Battery icon will be red if charge is <= this percentage
 //(could be configurable in the future)
-static const int red_percent = 20;
+static const int red_percent = 10;
 static const bool key_indicator_batt_redonly = false; // show battery icon only if red
 static uint8_t batteryPercent; //for calculating fill state
 
 //Battery - set image if charging, or set empty battery image if not charging
-void change_battery_icon(bool charging) {
+static void change_battery_icon(bool charging) {
   gbitmap_destroy(battery_image);
   if (charging) {
     battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_CHARGE);
@@ -23,7 +23,8 @@ void change_battery_icon(bool charging) {
 }
 
 //Update battery icon or hide it
-void update_battery(BatteryChargeState charge_state) {
+static void update_battery(BatteryChargeState charge_state) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Battery update: charge_percent=%d, is_charging=%d", charge_state.charge_percent, charge_state.is_charging);
   const bool show = key_indicator_batt_img
   ? (key_indicator_batt_redonly ? charge_state.charge_percent <= red_percent : true)
   : false;
@@ -54,7 +55,20 @@ static void battery_layer_update_callback(Layer *me, GContext* ctx) {
   graphics_fill_rect(ctx, GRect(2, 2, batteryPercent/100.0*11.0, 5), 0, GCornerNone);
 }
 
-Layer *battery_init() {
+void battery_settings_changed() {
+  if (key_indicator_batt_img) {
+    update_battery(battery_state_service_peek());
+    battery_state_service_subscribe(&update_battery);
+  } else {
+    battery_unsubscribe();
+  }
+}
+
+void battery_unsubscribe() {
+  battery_state_service_unsubscribe();
+}
+
+Layer *battery_layer_create() {
   battery_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY);
   const GRect bounds = gbitmap_get_bounds(battery_image);
   Layer *layer = layer_create(bounds);
@@ -72,7 +86,7 @@ Layer *battery_init() {
   return layer;
 }
 
-void battery_deinit() {
+void battery_layer_destroy() {
   battery_state_service_unsubscribe();
 
   layer_remove_from_parent(bitmap_layer_get_layer(battery_fill_layer));
