@@ -11,7 +11,7 @@ typedef enum {
 extern bool       key_indicator_fuzzy;        // true = don't be too exact about the time
 extern Visibility key_indicator_bluetooth;    // icon visibility - WARN = only when disconnected
 extern bool       key_indicator_vibe;         // true = vibe on bluetooth disconnect
-extern bool       key_indicator_batt_img;     // true = show batt usage image
+extern Visibility key_indicator_batt_img;     // icon visibility - WARN = Only when below threshold or charging
 extern bool       key_indicator_text_nrw;     // true = say "viertel x+1" at xx:45
 extern bool       key_indicator_text_wien;    // true = say "viertel x+1" at xx:15
 extern bool       key_indicator_date;         // true = show date

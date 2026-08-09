@@ -3,9 +3,9 @@
 //Default key values
 
 bool       key_indicator_fuzzy      = true;
-Visibility key_indicator_bluetooth  = ALWAYS;
+Visibility key_indicator_bluetooth  = WARN;
 bool       key_indicator_vibe       = true;
-bool       key_indicator_batt_img   = true;
+Visibility key_indicator_batt_img   = WARN;
 bool       key_indicator_text_nrw   = false;
 bool       key_indicator_text_wien  = false;
 bool       key_indicator_date       = true;
@@ -13,17 +13,16 @@ uint8_t    key_indicator_theme      = 0;
 uint8_t    key_indicator_text_align = 2;
 
 static void log_settings() {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Settings: fuzzy=%d, bluetooth=%d, vibe=%d, batt_img=%d, text_nrw=%d, text_wien=%d, date=%d, theme=%d, text_align=%d",
-    key_indicator_fuzzy,
-    key_indicator_bluetooth,
-    key_indicator_vibe,
-    key_indicator_batt_img,
-    key_indicator_text_nrw,
-    key_indicator_text_wien,
-    key_indicator_date,
-    key_indicator_theme,
-    key_indicator_text_align
-  );
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Settings:");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "fuzzy=%d",      key_indicator_fuzzy);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "bluetooth=%d",  key_indicator_bluetooth);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "vibe=%d",       key_indicator_vibe);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "batt_img=%d",   key_indicator_batt_img);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "text_nrw=%d",   key_indicator_text_nrw);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "text_wien=%d",  key_indicator_text_wien);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "date=%d",       key_indicator_date);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "theme=%d",      key_indicator_theme);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "text_align=%d", key_indicator_text_align);
 } 
 
 //Set key IDs
@@ -46,7 +45,7 @@ void persist_settings() {
   persist_write_bool( KEY_FUZZY,      key_indicator_fuzzy);
   persist_write_int(  KEY_BLUETOOTH,  key_indicator_bluetooth);
   persist_write_bool( KEY_VIBE,       key_indicator_vibe);
-  persist_write_bool( KEY_BATT_IMG,   key_indicator_batt_img);
+  persist_write_int(  KEY_BATT_IMG,   key_indicator_batt_img);
   persist_write_bool( KEY_TEXT_NRW,   key_indicator_text_nrw);
   persist_write_bool( KEY_TEXT_WIEN,  key_indicator_text_wien);
   persist_write_bool( KEY_DATE,       key_indicator_date);
@@ -60,7 +59,7 @@ void load_persisted_settings() {
   key_indicator_fuzzy       = persist_exists(KEY_FUZZY)       ? persist_read_bool(KEY_FUZZY)      : key_indicator_fuzzy;
   key_indicator_bluetooth   = persist_exists(KEY_BLUETOOTH)   ? persist_read_int (KEY_BLUETOOTH)  : key_indicator_bluetooth;
   key_indicator_vibe        = persist_exists(KEY_VIBE)        ? persist_read_bool(KEY_VIBE)       : key_indicator_vibe;
-  key_indicator_batt_img    = persist_exists(KEY_BATT_IMG)    ? persist_read_bool(KEY_BATT_IMG)   : key_indicator_batt_img;
+  key_indicator_batt_img    = persist_exists(KEY_BATT_IMG)    ? persist_read_int (KEY_BATT_IMG)   : key_indicator_batt_img;
   key_indicator_text_nrw    = persist_exists(KEY_TEXT_NRW)    ? persist_read_bool(KEY_TEXT_NRW)   : key_indicator_text_nrw;
   key_indicator_text_wien   = persist_exists(KEY_TEXT_WIEN)   ? persist_read_bool(KEY_TEXT_WIEN)  : key_indicator_text_wien;
   key_indicator_date        = persist_exists(KEY_DATE)        ? persist_read_bool(KEY_DATE)       : key_indicator_date;
@@ -70,7 +69,7 @@ void load_persisted_settings() {
 }
 
 static void process_tuple(const Tuple *t) {
-  APP_LOG(APP_LOG_LEVEL_INFO, "Received setting: key=%d, type=%d, length=%d", t->key, t->type, t->length);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Received setting: key=%d, type=%d, length=%d", t->key, t->type, t->length);
 
   switch(t->key) {
     case KEY_FUZZY: {
@@ -113,8 +112,8 @@ static void process_tuple(const Tuple *t) {
 }
 
 void settings_process_update(DictionaryIterator *iter) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating Settings from inbox with %d entries", dict_size(iter));
   for(Tuple *t = dict_read_first(iter); t != NULL; t = dict_read_next(iter)) {
     process_tuple(t);
   }
+  log_settings();
 }

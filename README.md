@@ -35,16 +35,16 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 * Recaclulate the layout when Timeline events are obstructing the screen
 * Added setup for DevContainer and GitHub Actions for automatic builds
 * Use GitHub Pages for the settings
-* make the configuration page work in the cloudpebble emulator
+* make the configuration page work in the cloudpebble and sdk emulator
 
 ### Layout
 
 * On larger displays the text is padded to the bottom right with some margin to the screen borders
 * Added configuration option for rectangle displays for text alignment
+* Configuration options to for bluetooth and battery to only show when relevant
 
 ## Planned future changes
 
-* Configuration options to enable/disable the changes [@wolframroesler](https://github.com/wolframroesler) made to the original
-* use versioned configuration pages
 * update the configuration design to pebbles default template and improve saving ux
+* use versioned configuration pages
 * Make it available in the Pebble store

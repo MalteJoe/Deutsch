@@ -11,6 +11,7 @@ static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "Received inbox message with size %d", dict_size(iter));
   settings_process_update(iter);
   bluetooth_settings_changed();
   battery_settings_changed();
@@ -28,7 +29,7 @@ static void init(void) {
   bluetooth_settings_changed();
   battery_settings_changed();
   app_message_register_inbox_received(in_received_handler);
-  app_message_open(512, 0);
+  app_message_open(128, 0);
 
   tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
 }

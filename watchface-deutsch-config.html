@@ -76,6 +76,15 @@
             <option value="on">Ja</option>
           </select>
         </div>
+
+        <div data-role="fieldcontain">
+          <label for="KEY_BATT_IMG">Batteriestatus anzeigen</label>
+          <select name="KEY_BATT_IMG" id="KEY_BATT_IMG">
+            <option value="0">Nie</option>
+            <option value="1">Wenn unter 10%</option>
+            <option value="2">Immer</option>
+          </select>
+        </div>
         
         <div data-role="fieldcontain">
           <label for="KEY_BLUETOOTH">Bluetooth-Icon anzeigen</label>
@@ -93,14 +102,6 @@
             <option value="on">Ja</option>
           </select>
         </div>
-        
-        <div data-role="fieldcontain">
-          <label for="KEY_BATT_IMG">Batteriestatus anzeigen</label>
-          <select name="KEY_BATT_IMG" id="KEY_BATT_IMG" data-role="slider">
-            <option value="off">Nein</option>
-            <option value="on">Ja</option>
-          </select>
-        </div>
 
       </div>
     </div>
@@ -111,7 +112,7 @@
           'KEY_FUZZY':      "on" == $("#KEY_FUZZY").val(),
           'KEY_BLUETOOTH':  Number( $("#KEY_BLUETOOTH").val()),
           'KEY_VIBE':       "on" == $("#KEY_VIBE").val(),
-          'KEY_BATT_IMG':   "on" == $("#KEY_BATT_IMG").val(),
+          'KEY_BATT_IMG':   Number( $("#KEY_BATT_IMG").val()),
           'KEY_TEXT_NRW':   "on" == $("#KEY_TEXT_NRW").val(),
           'KEY_TEXT_WIEN':  "on" == $("#KEY_TEXT_WIEN").val(),
           'KEY_DATE':       "on" == $("#KEY_DATE").val(),
@@ -135,7 +136,7 @@
           var field = $("#"+key);
           if (field !== null) {
             var value = decodeURIComponent(params[key]);
-            if (key=='KEY_THEME' || key=='KEY_TEXT_ALIGN' || key=='KEY_BLUETOOTH') {
+            if (key=='KEY_THEME' || key=='KEY_TEXT_ALIGN' || key=='KEY_BLUETOOTH' || key=='KEY_BATT_IMG') {
               $("#"+key).val(value);
               $("#"+key).selectmenu("refresh");
             } else {
