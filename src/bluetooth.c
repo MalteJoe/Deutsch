@@ -13,6 +13,9 @@ static void toggle_bluetooth_icon(bool connected) {
     bitmap_layer_set_bitmap(bluetooth_layer, connected ? bluetooth_connected_image : bluetooth_disconnected_image);
     layer_set_hidden(bitmap_layer_get_layer(bluetooth_layer), key_indicator_bluetooth == WARN && connected);
   }
+  if (!connected && key_indicator_vibe) {
+    vibes_long_pulse();
+  }
 }
 
 void bluetooth_settings_changed() {

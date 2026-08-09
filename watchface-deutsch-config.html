@@ -139,7 +139,7 @@
               $("#"+key).val(value);
               $("#"+key).selectmenu("refresh");
             } else {
-              field.val(value).slider("refresh");
+              field.val("true" == value ? "on" : "off").slider("refresh");
             }
           }
         }
