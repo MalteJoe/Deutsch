@@ -35,3 +35,52 @@ void load_persisted_settings() {
   key_indicator_theme       = persist_exists(KEY_THEME)       ? persist_read_int(KEY_THEME)       : key_indicator_theme;
   key_indicator_text_align  = persist_exists(KEY_TEXT_ALIGN)  ? persist_read_int(KEY_TEXT_ALIGN)  : key_indicator_text_align;
 }
+
+static void process_tuple(const Tuple *t) {
+  APP_LOG(APP_LOG_LEVEL_INFO,"[Deutsch] Received setting: key %lu is %s",t->key,t->value->cstring);
+
+  switch(t->key) {
+    case KEY_FUZZY: {
+      key_indicator_fuzzy = !strcmp(t->value->cstring,"on"); // easiest way to convert a on/off string into a boolean
+      break;
+    }
+    case KEY_BLUETOOTH: {
+      key_indicator_bluetooth = !strcmp(t->value->cstring,"on");
+      break;
+    }
+    case KEY_VIBE: {
+      key_indicator_vibe = !strcmp(t->value->cstring,"on");
+      break;
+    }
+    case KEY_BATT_IMG: {
+      key_indicator_batt_img = !strcmp(t->value->cstring, "on");
+      break;
+    }
+    case KEY_TEXT_NRW: {
+      key_indicator_text_nrw = !strcmp(t->value->cstring, "on");
+      break;
+    }
+    case KEY_TEXT_WIEN: {
+      key_indicator_text_wien = !strcmp(t->value->cstring, "on");
+      break;
+    }
+    case KEY_DATE: {
+      key_indicator_date = !strcmp(t->value->cstring, "on");
+      break;
+    }
+    case KEY_THEME: {
+      key_indicator_theme = atoi(t->value->cstring);
+      break;
+    }
+    case KEY_TEXT_ALIGN: {
+      key_indicator_text_align = atoi(t->value->cstring);
+      break;
+    }
+  }
+}
+
+void settings_process_update(DictionaryIterator *iter) {
+  for(Tuple *t = dict_read_first(iter); t != NULL; t = dict_read_next(iter)) {
+    process_tuple(t);
+  }
+}

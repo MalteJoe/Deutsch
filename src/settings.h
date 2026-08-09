@@ -30,3 +30,5 @@ void persist_settings();
 
 //Load value from storage, if storage is empty load default value
 void load_persisted_settings();
+
+void settings_process_update(DictionaryIterator *iter);
