@@ -19,8 +19,8 @@ static void toggle_bluetooth_icon(bool connected) {
 }
 
 void bluetooth_settings_changed() {
+  toggle_bluetooth_icon(connection_service_peek_pebble_app_connection());
   if (key_indicator_bluetooth > NEVER) {
-    toggle_bluetooth_icon(connection_service_peek_pebble_app_connection());
     connection_service_subscribe((ConnectionHandlers) {
       .pebble_app_connection_handler = toggle_bluetooth_icon
     });

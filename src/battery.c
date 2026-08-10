@@ -9,7 +9,7 @@ static GBitmap *battery_charging;
 //Battery icon will be red if charge is <= this percentage
 //(could be configurable in the future)
 static const int red_percent = 10;
-static uint8_t batteryPercent; //for calculating fill state
+static BatteryChargeState s_charge_state; //for rendering the fill state during the draw callback
 
 //Battery - set image if charging, or set empty battery image if not charging
 static void change_battery_icon(bool charging) {
@@ -25,8 +25,8 @@ static void update_battery(BatteryChargeState charge_state) {
     layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), true);
   } else {
     change_battery_icon(charge_state.is_charging);
-    batteryPercent = charge_state.charge_percent;
-    const bool show = key_indicator_batt_img == ALWAYS || batteryPercent <= red_percent || charge_state.is_charging;
+    s_charge_state = charge_state;
+    const bool show = key_indicator_batt_img == ALWAYS || charge_state.charge_percent <= red_percent || charge_state.is_charging;
     layer_set_hidden(bitmap_layer_get_layer(battery_image_layer), !show);
     layer_set_hidden(bitmap_layer_get_layer(battery_fill_layer), !show);
   }
@@ -34,18 +34,19 @@ static void update_battery(BatteryChargeState charge_state) {
 
 //draw the remaining battery percentage
 static void battery_layer_update_callback(Layer *me, GContext* ctx) {
-  const GColor color = batteryPercent <= red_percent ? GColorRed : GColorWhite;
+  const GColor color = s_charge_state.is_charging ? GColorGreen 
+      : s_charge_state.charge_percent <= red_percent ? GColorRed : GColorWhite;
   //Antialiasing is on by default where the platform supports it, but we set
   //it explicitly here since this is one of the few places we draw manually.
   graphics_context_set_antialiased(ctx, true);
   graphics_context_set_stroke_color(ctx, color);
   graphics_context_set_fill_color(ctx, color);
-  graphics_fill_rect(ctx, GRect(2, 2, batteryPercent/100.0*11.0, 5), 0, GCornerNone);
+  graphics_fill_rect(ctx, GRect(2, 2, s_charge_state.charge_percent/100.0*11.0, 5), 0, GCornerNone);
 }
 
 void battery_settings_changed() {
+  update_battery(battery_state_service_peek());
   if (key_indicator_batt_img > NEVER) {
-    update_battery(battery_state_service_peek());
     battery_state_service_subscribe(&update_battery);
   } else {
     battery_unsubscribe();
