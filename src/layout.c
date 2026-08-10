@@ -113,10 +113,17 @@ void layout_layers() {
 
   // bounding box with margins depending on the model
 #ifdef PBL_RECT
-  const GEdgeInsets margin = GEdgeInsets(bounds.size.h > BASE_H + 10 ? 10 : 0, bounds.size.w > BASE_W + 10 ? 10 : 0);
+  const vertical_space_available    = bounds.size.h > BASE_H + 10 + 5;
+  const horizontal_space_available  = bounds.size.w > BASE_W + 10*2;
+  const GEdgeInsets margin = GEdgeInsets(
+    vertical_space_available    ? 10 : 0, // top
+    horizontal_space_available  ? 10 : 0, // right
+    vertical_space_available    ? 5  : 0, // bottom
+    horizontal_space_available  ? 10 : 0  // left
+  );
   const GRect r_drawing_area = grect_inset(bounds, margin);
 #else
-  const GRect r_drawing_area = grect_inset(bounds, GEdgeInsets(0, 10));
+  const GRect r_drawing_area = grect_inset(bounds, GEdgeInsets(5, 10, 10, 10));
 #endif
   
   GRect r_text_area = (GRect) {

@@ -45,6 +45,10 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 
 ## Planned future changes
 
+* make bluetooth and battery icons work with color themes
+    * recheck all themes and icon colors (battery) with b/w watches
 * update the configuration design to pebbles default template and improve saving ux
-* use versioned configuration pages
+* make low battery threshold configurable
+* use versioned configuration pages (might be obsolete after previous point)
 * Make it available in the Pebble store
+    * New/Updated Screenshots, App-Icons, …
