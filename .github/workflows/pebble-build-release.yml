@@ -37,7 +37,8 @@ jobs:
 
       - name: Build Pebble app
         run: |
-          pebble build --sdk 4.17 || pebble build --sdk 4.17 -vvv
+          pebble sdk install 4.17
+          pebble build
 
       - name: Upload PBW artifact
         uses: actions/upload-artifact@v4
