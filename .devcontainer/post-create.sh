@@ -5,4 +5,4 @@ sudo apt-get update
 sudo apt-get install -y python3.13-venv
 
 uv tool install pebble-tool
-pebble sdk install 4.17
+pebble sdk install 4.33
