@@ -6,7 +6,9 @@
   "keywords": [
     "pebble-app"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@rebble/clay": "^1.0.10"
+  },
   "pebble": {
     "sdkVersion": "3",
     "targetPlatforms": [
@@ -18,7 +20,7 @@
       "flint",
       "gabbro"
     ],
-    "enableMultiJS": false,
+    "enableMultiJS": true,
     "capabilities": [
       "configurable"
     ],
@@ -38,7 +40,7 @@
           "type": "png"
         },
         {
-          "characterRegex": "[a-z\u00e4\u00f6\u00fc ]",
+          "characterRegex": "[a-zäöü ]",
           "compatibility": "2.7",
           "file": "fonts/Roboto-Light.ttf",
           "name": "FONT_ROBOTO_LIGHT_34",
@@ -67,6 +69,16 @@
         }
       ]
     },
-    "messageKeys": {}
+    "messageKeys": [
+      "Fuzzy",
+      "BluetoothIcon",
+      "VibeOnDisconnect",
+      "BatteryIcon",
+      "TextNRW",
+      "TextWien",
+      "Date",
+      "ColorTheme",
+      "TextAlignment"
+    ]
   }
 }

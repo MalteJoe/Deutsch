@@ -34,8 +34,9 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 * Refactor layout logic to support an array of watch resolutions
 * Recaclulate the layout when Timeline events are obstructing the screen
 * Added setup for DevContainer and GitHub Actions for automatic builds
-* Use GitHub Pages for the settings
+* ~~Use GitHub Pages for the settings~~
 * make the configuration page work in the cloudpebble and sdk emulator
+* Update Configuration Page to use the clay library
 
 ### Layout
 
@@ -47,8 +48,8 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 
 * make bluetooth and battery icons work with color themes
     * recheck all themes and icon colors (battery) with b/w watches
-* update the configuration design to pebbles default template and improve saving ux
 * make low battery threshold configurable
-* use versioned configuration pages (might be obsolete after previous point)
 * Make it available in the Pebble store
     * New/Updated Screenshots, App-Icons, …
+* Option to create custom theme with custom colours
+* reduce options for incapable watches (e.g. colours for b/w watches)

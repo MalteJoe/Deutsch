@@ -113,8 +113,8 @@ void layout_layers() {
 
   // bounding box with margins depending on the model
 #ifdef PBL_RECT
-  const vertical_space_available    = bounds.size.h > BASE_H + 10 + 5;
-  const horizontal_space_available  = bounds.size.w > BASE_W + 10*2;
+  const int vertical_space_available    = bounds.size.h > BASE_H + 10 + 5;
+  const int horizontal_space_available  = bounds.size.w > BASE_W + 10*2;
   const GEdgeInsets margin = GEdgeInsets(
     vertical_space_available    ? 10 : 0, // top
     horizontal_space_available  ? 10 : 0, // right

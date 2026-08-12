@@ -68,52 +68,93 @@ void load_persisted_settings() {
   log_settings();
 }
 
-static void process_tuple(const Tuple *t) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Received setting: key=%d, type=%d, length=%d", t->key, t->type, t->length);
-
-  switch(t->key) {
-    case KEY_FUZZY: {
-      key_indicator_fuzzy = t->value->int16;
-      break;
-    }
-    case KEY_BLUETOOTH: {
-      key_indicator_bluetooth = t->value->int32;
-      break;
-    }
-    case KEY_VIBE: {
-      key_indicator_vibe = t->value->int16;
-      break;
-    }
-    case KEY_BATT_IMG: {
-      key_indicator_batt_img = t->value->int16;
-      break;
-    }
-    case KEY_TEXT_NRW: {
-      key_indicator_text_nrw = t->value->int16;
-      break;
-    }
-    case KEY_TEXT_WIEN: {
-      key_indicator_text_wien = t->value->int16;
-      break;
-    }
-    case KEY_DATE: {
-      key_indicator_date = t->value->int16;
-      break;
-    }
-    case KEY_THEME: {
-      key_indicator_theme = t->value->int32;
-      break;
-    }
-    case KEY_TEXT_ALIGN: {
-      key_indicator_text_align = t->value->int32;
-      break;
-    }
-  }
-}
-
 void settings_process_update(DictionaryIterator *iter) {
-  for(Tuple *t = dict_read_first(iter); t != NULL; t = dict_read_next(iter)) {
-    process_tuple(t);
+  Tuple *t;
+
+  for (t = dict_read_first(iter); t != NULL; t = dict_read_next(iter)) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Received key=%d of type=%d with size=%d", t->key, t->type, t->length);
+    switch (t->type)
+    {
+    case 1: // string
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "cstring=%s", t->value->cstring);
+      break;
+    case 3: // int
+      switch (t->length)
+      {
+      case 1:
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "int8=%d", t->value->int8);
+        break;
+      case 2:
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "int16=%d", t->value->int16);
+        break;
+      case 4:
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "int32=%d", t->value->int32);
+        break;
+      
+      default:
+        break;
+      }
+    default:
+      break;
+    }
   }
+  
+  t = dict_find(iter, MESSAGE_KEY_Fuzzy);
+  if (t != NULL) {
+    key_indicator_fuzzy = t->value->int32;
+  }
+
+  t = dict_find(iter, MESSAGE_KEY_BluetoothIcon);
+  if (t != NULL) {
+    // TODO with the next release of clay:
+    // key_indicator_bluetooth = t->value->int32;
+    key_indicator_bluetooth = atoi(t->value->cstring);
+  }
+
+  t = dict_find(iter, MESSAGE_KEY_VibeOnDisconnect);
+  if (t != NULL) {
+    key_indicator_vibe = t->value->int32;
+  }
+
+  t = dict_find(iter, MESSAGE_KEY_BatteryIcon);
+  if (t != NULL) {
+    // TODO with the next release of clay:
+    // key_indicator_batt_img = t->value->int32;
+    key_indicator_batt_img = atoi(t->value->cstring);
+  }
+
+  t = dict_find(iter, MESSAGE_KEY_TextNRW);
+  if (t != NULL) {
+    // TODO with the next release of clay:
+    // key_indicator_text_nrw = t->value->int32;
+    key_indicator_text_nrw = atoi(t->value->cstring);
+  }
+
+  t = dict_find(iter, MESSAGE_KEY_TextWien);
+  if (t != NULL) {
+    // TODO with the next release of clay:
+    // key_indicator_text_wien = t->value->int32;
+    key_indicator_text_wien = atoi(t->value->cstring);
+  }
+
+  t = dict_find(iter, MESSAGE_KEY_Date);
+  if (t != NULL) {
+    key_indicator_date = t->value->int32;
+  }
+
+  t = dict_find(iter, MESSAGE_KEY_ColorTheme);
+  if (t != NULL) {
+    // TODO with the next release of clay:
+    // key_indicator_theme = t->value->int32;
+    key_indicator_theme = atoi(t->value->cstring);
+  }
+
+  t = dict_find(iter, MESSAGE_KEY_TextAlignment);
+  if (t != NULL) {
+    // TODO with the next release of clay:
+    // key_indicator_text_align = t->value->int32;
+    key_indicator_text_align = atoi(t->value->cstring);
+  }
+  
   log_settings();
 }
