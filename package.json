@@ -35,37 +35,32 @@
     "resources": {
       "media": [
         {
-          "file": "images/icon_battery_eco.png",
-          "name": "IMAGE_BATTERY_ECO",
-          "type": "png"
-        },
-        {
+          "name": "FONT_ROBOTO_LIGHT_34",
+          "type": "font",
+          "file": "fonts/Roboto-Light.ttf",
           "characterRegex": "[a-zäöü ]",
           "compatibility": "2.7",
-          "file": "fonts/Roboto-Light.ttf",
-          "name": "FONT_ROBOTO_LIGHT_34",
-          "trackingAdjust": -1,
-          "type": "font"
+          "trackingAdjust": -1
         },
         {
-          "file": "images/icon_battery.png",
           "name": "IMAGE_BATTERY",
-          "type": "png"
+          "type": "png",
+          "file": "images/icon_battery_white.png"
         },
         {
-          "file": "images/icon_battery_charge.png",
           "name": "IMAGE_BATTERY_CHARGE",
-          "type": "png"
+          "type": "png",
+          "file": "images/icon_battery_charge_white.png"
         },
         {
-          "file": "images/icon_bluetooth_disconnected.png",
           "name": "IMAGE_BLUETOOTH_DISCONNECTED",
-          "type": "png"
+          "type": "png",
+          "file": "images/icon_bluetooth_disconnected_white.png"
         },
         {
-          "file": "images/icon_bluetooth_connected.png",
           "name": "IMAGE_BLUETOOTH_CONNECTED",
-          "type": "png"
+          "type": "png",
+          "file": "images/icon_bluetooth_connected_white.png"
         }
       ]
     },

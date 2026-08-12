@@ -48,8 +48,9 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 
 * make bluetooth and battery icons work with color themes
     * recheck all themes and icon colors (battery) with b/w watches
-* make low battery threshold configurable
 * Make it available in the Pebble store
     * New/Updated Screenshots, App-Icons, …
+* make low battery threshold configurable
+    * maybe even whether icon is displayed during charging
 * Option to create custom theme with custom colours
 * reduce options for incapable watches (e.g. colours for b/w watches)

@@ -37,6 +37,7 @@ Layer *bluetooth_layer_create() {
   bluetooth_connected_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_CONNECTED);
   bluetooth_disconnected_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_DISCONNECTED);
   bluetooth_layer = bitmap_layer_create(gbitmap_get_bounds(bluetooth_connected_image));
+  bitmap_layer_set_compositing_mode(bluetooth_layer, GCompOpSet);
 
   return bitmap_layer_get_layer(bluetooth_layer);
 }
