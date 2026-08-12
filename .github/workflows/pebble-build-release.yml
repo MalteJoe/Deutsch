@@ -2,10 +2,6 @@ name: Pebble Build and Release
 
 on:
   push:
-    branches:
-      - master
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 permissions:
