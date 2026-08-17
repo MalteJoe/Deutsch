@@ -150,7 +150,11 @@ void layout_layers() {
   GRect bt_frame = layer_get_bounds(bluetooth_layer);
 #ifdef PBL_RECT
   grect_align(&battery_frame, &r_drawing_area, GAlignTopLeft, false);
+  battery_frame.origin.x += 3;
+  battery_frame.origin.y += 3;
   grect_align(&bt_frame, &r_drawing_area, GAlignTopRight, false);
+  bt_frame.origin.x -= 3;
+  bt_frame.origin.y += 3;
 #else
   // use the window layer so icons don't move on quick view
   const GRect window_layer = grect_inset(layer_get_bounds(window_get_root_layer(window)), GEdgeInsets(10));

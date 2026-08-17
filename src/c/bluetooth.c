@@ -18,7 +18,22 @@ static void toggle_bluetooth_icon(bool connected) {
   }
 }
 
+static void load_icons() {
+  static int loaded_theme = -1;
+  if (bluetooth_connected_image != NULL && loaded_theme == key_indicator_theme) {
+    return;
+  }
+  if (loaded_theme != key_indicator_theme && bluetooth_connected_image != NULL) {
+    gbitmap_destroy(bluetooth_connected_image);
+    gbitmap_destroy(bluetooth_disconnected_image);
+  }
+  bluetooth_connected_image    = gbitmap_create_with_resource(key_indicator_theme != 5 ? RESOURCE_ID_IMAGE_BLUETOOTH_CONNECTED : RESOURCE_ID_IMAGE_BLUETOOTH_CONNECTED_INVERTED);
+  bluetooth_disconnected_image = gbitmap_create_with_resource(key_indicator_theme != 5 ? RESOURCE_ID_IMAGE_BLUETOOTH_DISCONNECTED : RESOURCE_ID_IMAGE_BLUETOOTH_DISCONNECTED_INVERTED);
+  loaded_theme = key_indicator_theme;
+}
+
 void bluetooth_settings_changed() {
+  load_icons();
   toggle_bluetooth_icon(connection_service_peek_pebble_app_connection());
   if (key_indicator_bluetooth > NEVER) {
     connection_service_subscribe((ConnectionHandlers) {
@@ -34,8 +49,7 @@ void bluetooth_unsubscribe() {
 }
 
 Layer *bluetooth_layer_create() {
-  bluetooth_connected_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_CONNECTED);
-  bluetooth_disconnected_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_DISCONNECTED);
+  load_icons();
   bluetooth_layer = bitmap_layer_create(gbitmap_get_bounds(bluetooth_connected_image));
   bitmap_layer_set_compositing_mode(bluetooth_layer, GCompOpSet);
 

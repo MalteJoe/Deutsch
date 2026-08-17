@@ -36,17 +36,31 @@ static void update_battery(BatteryChargeState charge_state) {
 
 //draw the remaining battery percentage
 static void battery_layer_update_callback(Layer *me, GContext* ctx) {
-  const GColor color = s_charge_state.is_charging ? GColorGreen 
-      : s_charge_state.charge_percent <= red_percent ? GColorRed : GColorWhite;
-  //Antialiasing is on by default where the platform supports it, but we set
-  //it explicitly here since this is one of the few places we draw manually.
-  graphics_context_set_antialiased(ctx, true);
+  const GColor color = s_charge_state.is_charging ? GColorIslamicGreen
+      : s_charge_state.charge_percent <= red_percent ? 
+          PBL_IF_COLOR_ELSE(GColorRed, key_indicator_theme != 5 ? GColorWhite : GColorBlack)
+          : key_indicator_theme != 5 ? GColorWhite : GColorBlack;
   graphics_context_set_stroke_color(ctx, color);
   graphics_context_set_fill_color(ctx, color);
   graphics_fill_rect(ctx, GRect(2, 2, s_charge_state.charge_percent/100.0*11.0, 5), 0, GCornerNone);
 }
 
+static void load_icons() {
+  static int loaded_theme = -1;
+  if (battery_frame != NULL && loaded_theme == key_indicator_theme) {
+    return;
+  }
+  if (loaded_theme != key_indicator_theme && battery_frame != NULL) {
+    gbitmap_destroy(battery_frame);
+    gbitmap_destroy(battery_charging);
+  }
+  battery_frame    = gbitmap_create_with_resource(key_indicator_theme != 5 ? RESOURCE_ID_IMAGE_BATTERY : RESOURCE_ID_IMAGE_BATTERY_INVERTED);
+  battery_charging = gbitmap_create_with_resource(key_indicator_theme != 5 ? RESOURCE_ID_IMAGE_BATTERY_CHARGE : RESOURCE_ID_IMAGE_BATTERY_CHARGE_INVERTED);
+  loaded_theme = key_indicator_theme;
+}
+
 void battery_settings_changed() {
+  load_icons();
   update_battery(battery_state_service_peek());
   if (key_indicator_batt_img > NEVER) {
     battery_state_service_subscribe(&update_battery);
@@ -60,14 +74,13 @@ void battery_unsubscribe() {
 }
 
 Layer *battery_layer_create() {
-  battery_frame = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY);
-  battery_charging = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_CHARGE);
+  load_icons();
   const GRect bounds = gbitmap_get_bounds(battery_frame);
   Layer *layer = layer_create(bounds);
   battery_fill_layer = bitmap_layer_create(bounds);
   battery_image_layer = bitmap_layer_create(bounds);
   bitmap_layer_set_bitmap(battery_image_layer, battery_frame);
-  bitmap_layer_set_compositing_mode(battery_image_layer, PBL_IF_BW_ELSE(GCompOpAssignInverted, GCompOpSet));
+  bitmap_layer_set_compositing_mode(battery_image_layer, GCompOpSet);
   layer_set_update_proc(bitmap_layer_get_layer(battery_fill_layer), battery_layer_update_callback);
 
   layer_add_child(layer, bitmap_layer_get_layer(battery_fill_layer));

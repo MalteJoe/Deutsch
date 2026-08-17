@@ -44,13 +44,23 @@
         },
         {
           "name": "IMAGE_BATTERY",
-          "type": "png",
+          "type": "bitmap",
           "file": "images/icon_battery_white.png"
         },
         {
+          "name": "IMAGE_BATTERY_INVERTED",
+          "type": "bitmap",
+          "file": "images/icon_battery_black.png"
+        },
+        {
           "name": "IMAGE_BATTERY_CHARGE",
-          "type": "png",
+          "type": "bitmap",
           "file": "images/icon_battery_charge_white.png"
+        },
+        {
+          "name": "IMAGE_BATTERY_CHARGE_INVERTED",
+          "type": "bitmap",
+          "file": "images/icon_battery_charge_black.png"
         },
         {
           "name": "IMAGE_BLUETOOTH_DISCONNECTED",
@@ -58,9 +68,19 @@
           "file": "images/icon_bluetooth_disconnected_white.png"
         },
         {
+          "name": "IMAGE_BLUETOOTH_DISCONNECTED_INVERTED",
+          "type": "png",
+          "file": "images/icon_bluetooth_disconnected_black.png"
+        },
+        {
           "name": "IMAGE_BLUETOOTH_CONNECTED",
           "type": "png",
           "file": "images/icon_bluetooth_connected_white.png"
+        },
+        {
+          "name": "IMAGE_BLUETOOTH_CONNECTED_INVERTED",
+          "type": "png",
+          "file": "images/icon_bluetooth_connected_black.png"
         }
       ]
     },
