@@ -48,5 +48,6 @@ jobs:
         with:
           files: |
             build/kurz-vor-acht.pbw
-          draft: false
+          draft: true
           prerelease: false
+          generate_release_notes: true

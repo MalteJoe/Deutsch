@@ -1,7 +1,7 @@
 # kurz vor acht – German Pebble Watchface
 
 This is is a watchface for the Pebble smartwatch that shows the current time in German.
-The watchface is based on https://github.com/n3v3r001/n3v3rstextone by [@n3v3r001](https://github.com/n3v3r001) and the [fork](https://github.com/wolframroesler/Deutsch) by [@wolframroesler](https://github.com/wolframroesler) adjusted for modern pebbles while keeping compatibility with the originals.
+The watchface is based on [n3v3rstextone](https://github.com/n3v3r001/n3v3rstextone) by [@n3v3r001](https://github.com/n3v3r001) and [Deutsch](https://github.com/wolframroesler/Deutsch) by [@wolframroesler](https://github.com/wolframroesler), adjusted for modern pebbles while keeping compatibility with the originals.
 
 ![banner](pics/banner.jpg)
 
@@ -29,7 +29,7 @@ Releases are built automatically in GitHub Actions, so the latest packaged build
 
 ## Changes
 
-In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wolframroesler](https://github.com/wolframroesler) I have made these additions:
+In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wolframroesler](https://github.com/wolframroesler) I have made these further changes:
 
 ### Technical
 
@@ -52,6 +52,7 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 ## Planned future changes
 
 * fix three line text on flint with quick view
+* add more screenshots for each pebble variant
 * make low battery threshold configurable
     * maybe even whether icon is displayed during charging
 * Option to create custom theme with custom colours
