@@ -18,7 +18,7 @@ module.exports = [
         serializeValueAs: "integer",
         options: [
           {
-            label: "Schwarz/weiß",
+            label: "Schwarz",
             value: "0",
           },
           {
@@ -48,7 +48,7 @@ module.exports = [
         messageKey: "TextAlignment",
         defaultValue: "2",
         label: "Textausrichtung",
-        capabilities: ["NOT_ROUND"],
+        capabilities: ["RECT"],
         serializeValueAs: "integer",
         options: [
           {
@@ -182,6 +182,6 @@ module.exports = [
   },
   {
     type: "submit",
-    defaultValue: "Save Settings",
+    defaultValue: "Speichern",
   },
 ];

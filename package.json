@@ -1,5 +1,5 @@
 {
-  "name": "Deutsch",
+  "name": "kurz-vor-acht",
   "author": "Malte Jörgens",
   "version": "4.0.0",
   "private": true,
@@ -25,7 +25,7 @@
       "configurable"
     ],
     "projectType": "native",
-    "displayName": "Deutsch",
+    "displayName": "kurz vor acht",
     "uuid": "5a301614-84e4-42cc-b8ba-0e47da96f72b",
     "watchapp": {
       "watchface": true,
@@ -34,6 +34,13 @@
     },
     "resources": {
       "media": [
+        {
+          "file": "images/menu.png",
+          "name": "APP_ICON",
+          "type": "bitmap",
+          "memoryFormat": "1Bit",
+          "menuIcon": true
+        },
         {
           "name": "FONT_ROBOTO_LIGHT_34",
           "type": "font",

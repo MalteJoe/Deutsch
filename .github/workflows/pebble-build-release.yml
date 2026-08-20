@@ -39,8 +39,8 @@ jobs:
       - name: Upload PBW artifact
         uses: actions/upload-artifact@v4
         with:
-          name: deutsch-pbw
-          path: build/Deutsch.pbw
+          name: kurz-vor-acht
+          path: build/kurz-vor-acht.pbw
 
       - name: Create GitHub Release on push with tag
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')

@@ -1,4 +1,4 @@
 build
 node_modules
 .lock-waf_*_build
-pebble_screenshot_*
+/pebble_screenshot_*

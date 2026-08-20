@@ -1,26 +1,29 @@
-# German Pebble Watchface
+# kurz vor acht – German Pebble Watchface
 
 This is is a watchface for the Pebble smartwatch that shows the current time in German.
+The watchface is based on https://github.com/n3v3r001/n3v3rstextone by [@n3v3r001](https://github.com/n3v3r001) and the [fork](https://github.com/wolframroesler/Deutsch) by [@wolframroesler](https://github.com/wolframroesler) adjusted for modern pebbles while keeping compatibility with the originals.
 
-![Pebble Time mockup](pics/mockup1.jpg)
-![Pebble Time Steel mockup](pics/mockup2.jpg)
-![Pebble Steel mockup](pics/mockup3.jpg)
+![banner](pics/banner.jpg)
 
-The time is shown in colloquial, "fuzzy" mode: We say "Viertel nach 10" when it's only 10:12 or already 10:17.
+The time is shown in colloquial, "fuzzy" mode: We say "kurz vor acht" ("just before eight") e.g. when it's 7:58, but an exact mode is also available.
 
-Several color themes are available (selected with the configuration dialog in your phone's Pebble app). More to be added on request, or when I get more shirts.
+Several color themes are available (selected with the configuration dialog in your phone's Pebble app).
 
-![Blue theme](pics/blue.jpg)
-![Red theme](pics/red.jpg)
-![Gray theme](pics/gray.jpg)
+## Screenshots
 
-A battery icon is displayed in the upper left corner when charge drops to 10 % or below. A Bluetooth icon is displayed in the upper right corner when the Bluetooth connection is lost. To give the watchface a clean, minimalistic look, both icons are shown only when necessary.
+![Black theme on the original pebble with status symbols](pics/aplite_black_status.png)
+![Green theme on Pebble Time (Steel)](pics/basalt_green.png)
+![Blue theme on Pebble Time Round in exact modewith warnings](pics/chalk_blue_status.png)
+![Red theme on Pebble Time 2 with Timeline Quick View](pics/emery_red_quick_view.png)
+![Gray theme on charging Pebble Round 2 with Timeline Quick View](pics/gabbro_gray_quick_view_charging.png)
+![White theme on Pebble 2 Duo](pics/flint_white.png)
 
-![Battery and Bluetooth icons](pics/icons.png)
+## Installation
 
-The watchface is based on https://github.com/n3v3r001/n3v3rstextone by [@n3v3r001](https://github.com/n3v3r001) and the [fork](https://github.com/wolframroesler/Deutsch) by [@wolframroesler](https://github.com/wolframroesler) adjusted for modern pebbles.
+Pebble Store Link coming soon…
 
-To install the watchface on your Pebble, download the latest release from the GitHub Releases page and upload the generated `Deutsch.pbw` file using the Pebble app on your smartphone. If you prefer building it yourself, you can also build and install the watchface with the Pebble SDK as described on https://developer.rebble.io/developer.pebble.com/tutorials/watchface-tutorial/part1/index.html. Check out the devcontainer and Actions setup in this repo to see how to install the SDK and build the watchface.
+### Sideloading
+To install the watchface on your Pebble, download the latest release from the GitHub Releases page and upload the generated `kurz-vor-acht.pbw` file using the Pebble app on your smartphone. If you prefer building it yourself, you can also build and install the watchface with the Pebble SDK as described on https://developer.repebble.com/sdk/. Check out the devcontainer and GitHub Actions setup in this repo to see how to install the SDK and build the watchface.
 
 Releases are built automatically in GitHub Actions, so the latest packaged build is always available from the repository's Releases page.
 
@@ -34,9 +37,10 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 * Refactor layout logic to support an array of watch resolutions
 * Recaclulate the layout when Timeline events are obstructing the screen
 * Added setup for DevContainer and GitHub Actions for automatic builds
-* ~~Use GitHub Pages for the settings~~
+* ~~Use GitHub Pages for the settings~~ Obsolete by move to Clay
 * make the configuration page work in the cloudpebble and sdk emulator
 * Update Configuration Page to use the clay library
+* make bluetooth and battery icons work with color themes
 
 ### Layout
 
@@ -46,11 +50,11 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 
 ## Planned future changes
 
-* make bluetooth and battery icons work with color themes
-    * recheck all themes and icon colors (battery) with b/w watches
 * Make it available in the Pebble store
     * New/Updated Screenshots, App-Icons, …
+* fix three line text on flint with quick view
 * make low battery threshold configurable
     * maybe even whether icon is displayed during charging
 * Option to create custom theme with custom colours
 * reduce options for incapable watches (e.g. colours for b/w watches)
+* reuse same battery assets with pallette inversion instead of having separate resources
