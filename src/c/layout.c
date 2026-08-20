@@ -23,7 +23,7 @@ static Layer
   *bluetooth_layer;
 
 void set_theme() {
-  APP_LOG(APP_LOG_LEVEL_INFO,"[Deutsch] Setting colors according to theme %d",key_indicator_theme);
+  APP_LOG(APP_LOG_LEVEL_INFO,"Setting colors according to theme %d",key_indicator_theme);
 
   GColor bkgnd, date, min, hr;
   switch(key_indicator_theme) {

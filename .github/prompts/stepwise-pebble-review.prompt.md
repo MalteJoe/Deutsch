@@ -22,7 +22,6 @@ Act as a careful Pebble watchface engineering reviewer. Do not implement the fea
 5. Ask the user to proceed to the next minimal step.
 
 ### Context:
-- Pebble JS config page pattern: watchface-deutsch-config.html and src/js/pebble-js-app.js
 - SDK references:
   - Pebble C SDK docs: https://developer.repebble.com/docs/c/
   - Pebble best practices: https://developer.repebble.com/guides/best-practices/
