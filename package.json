@@ -1,7 +1,7 @@
 {
   "name": "kurz-vor-acht",
   "author": "Malte Jörgens",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "private": true,
   "keywords": [
     "pebble-app"
