@@ -20,10 +20,10 @@ Several color themes are available (selected with the configuration dialog in yo
 
 ## Installation
 
-Pebble Store Link coming soon…
+### [Pebble Appstore](https://apps.repebble.com/4151feede8864a94905355d0)
 
 ### Sideloading
-To install the watchface on your Pebble, download the latest release from the GitHub Releases page and upload the generated `kurz-vor-acht.pbw` file using the Pebble app on your smartphone. If you prefer building it yourself, you can also build and install the watchface with the Pebble SDK as described on https://developer.repebble.com/sdk/. Check out the devcontainer and GitHub Actions setup in this repo to see how to install the SDK and build the watchface.
+To install the watchface on your Pebble, download the latest release from the GitHub Releases page and upload the generated `kurz-vor-acht.pbw` file using the Pebble app on your smartphone. If you prefer building it yourself, you can also build and install the watchface with the [Pebble SDK](https://developer.repebble.com/sdk/). Also check out the devcontainer and GitHub Actions setup in this repo to see how to install the SDK and build the watchface.
 
 Releases are built automatically in GitHub Actions, so the latest packaged build is always available from the repository's Releases page.
 
@@ -35,7 +35,7 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 
 * Update to Pebble SDK 4 to support Pebble 2, Pebble 2 Duo, Pebble Time 2 and Pebble Round 2
 * Refactor layout logic to support an array of watch resolutions
-* Recaclulate the layout when Timeline events are obstructing the screen
+* Recalculate the layout when Timeline events are obstructing the screen
 * Added setup for DevContainer and GitHub Actions for automatic builds
 * ~~Use GitHub Pages for the settings~~ Obsolete by move to Clay
 * make the configuration page work in the cloudpebble and sdk emulator
