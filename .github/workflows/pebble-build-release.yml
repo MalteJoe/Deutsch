@@ -30,7 +30,7 @@ jobs:
       - name: Install Pebble tool and SDK
         run: |
           uv tool install pebble-tool
-          pebble sdk install 4.33
+          pebble sdk install 4.33.1
 
       - name: Build Pebble app
         run: |
