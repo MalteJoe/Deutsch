@@ -41,6 +41,7 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 * make the configuration page work in the cloudpebble and sdk emulator
 * Update Configuration Page to use the clay library
 * make bluetooth and battery icons work with color themes
+* Make it available in the Pebble store
 
 ### Layout
 
@@ -50,8 +51,6 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 
 ## Planned future changes
 
-* Make it available in the Pebble store
-    * New/Updated Screenshots, App-Icons, …
 * fix three line text on flint with quick view
 * make low battery threshold configurable
     * maybe even whether icon is displayed during charging
