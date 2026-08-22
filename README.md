@@ -11,12 +11,14 @@ Several color themes are available (selected with the configuration dialog in yo
 
 ## Screenshots
 
-![Black theme on the original pebble with status symbols](pics/aplite_black_status.png)
-![Green theme on Pebble Time (Steel)](pics/basalt_green.png)
-![Blue theme on Pebble Time Round in exact modewith warnings](pics/chalk_blue_status.png)
-![Red theme on Pebble Time 2 with Timeline Quick View](pics/emery_red_quick_view.png)
-![Gray theme on charging Pebble Round 2 with Timeline Quick View](pics/gabbro_gray_quick_view_charging.png)
-![White theme on Pebble 2 Duo](pics/flint_white.png)
+| | | | | | | |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: | 
+| **Pebble Classic/ Steel**<br>Aplite | ![Black theme right aligned](pics/aplite_black.png "Black theme right aligned") | ![White theme centered charging](pics/aplite_white_disconnected.png "White theme centered charging and disconnected") | ![Black theme with status symbols](pics/aplite_black_status.png "Black theme with status symbols") |
+| **Pebble Time / Time Steel**<br>Basalt | ![Black theme right aligned](pics/basalt_black.png "Black theme right aligned") | ![Blue theme centered with low battery and disconnected bluetooth](pics/basalt_blue.png "Blue theme centered with low battery and disconnected bluetooth") | ![Green theme](pics/basalt_green.png "Green theme") | ![Red theme charging](pics/basalt_red.png "Red theme charging") | ![Gray theme with quick view](pics/basalt_gray_quick_view.png "Gray theme with quick view") | ![White theme](pics/basalt_white.png "White theme") |
+| **Pebble Time Round**<br>Chalk | ![Black theme](pics/chalk_black.png "Black theme") | ![Blue theme in exact mode with warnings](pics/chalk_blue_status.png "Blue theme in exact mode with warnings") | ![Green theme](pics/chalk_green.png "Green theme") | ![Red theme charging](pics/chalk_red_charging.png "Red theme charging") | ![White theme](pics/chalk_white.png "White theme") |
+| **Pebble&nbsp;2**<br>Diorite | ![Black theme right aligned](pics/diorite_black.png "Black theme right aligned") | ![White theme centered charging](pics/diorite_white_center.png "White theme centered charging") | ![White theme charging](pics/diorite_white_left.png "White theme charging") | ![Black theme with quick view](pics/diorite_black_quick_view.png "Black theme with quick view") | ![White theme with exact time](pics/diorite_white_exact.png "White theme with exact time") |
+| **Pebble Time&nbsp;2**<br>Emery | ![Black theme right aligned](pics/emery_black.png "Black theme right aligned") | ![Blue theme with low battery](pics/emery_blue.png "Blue theme with low battery") | ![Green  theme](pics/emery_green.png "Green  theme") | ![Red theme with quick view](pics/emery_red_quick_view.png "Red theme with quick view") | ![Gray theme charging](pics/emery_gray_charging.png "Gray theme charging")| ![White theme](pics/emery_white.png "White theme") |
+| **Pebble Round&nbsp;2**<br>Gabbro | ![Black theme](pics/gabbro_black.png "Black theme") | ![Blue theme with low battery](pics/gabbro_blue.png "Blue theme with low battery") | ![Green theme](pics/gabbro_green.png "Green theme") | ![Red theme charging with quick view](pics/gabbro_red_quick_view.png "Red theme charging with quick view") | ![Gray theme charging with Timeline Quick View](pics/gabbro_gray_quick_view_charging.png "Gray theme charging with Timeline Quick View")| ![White theme](pics/gabbro_white.png "White theme") |
 
 ## Installation
 
@@ -52,7 +54,6 @@ In addition to the [changes](https://github.com/wolframroesler/Deutsch) by [@wol
 ## Planned future changes
 
 * fix three line text on flint with quick view
-* add more screenshots for each pebble variant
 * make low battery threshold configurable
     * maybe even whether icon is displayed during charging
 * Option to create custom theme with custom colours
